@@ -60,7 +60,7 @@ const extension = {
 };
 
 
-const webview = {
+const niftiWebview = {
     ...general,
     target: 'web',
     entry: {
@@ -80,4 +80,4 @@ const webview = {
     ],
 };
 
-module.exports = [webview,extension];
+module.exports = [extension, niftiWebview];

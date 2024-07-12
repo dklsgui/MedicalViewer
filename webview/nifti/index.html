@@ -7,7 +7,6 @@
     <title>Nifti Viewer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.9.14/css/layui.css" integrity="sha512-YL3el60sSycKIM/ld2Vf1bD4qd3JvBJ0+y4Ra/rOdZrin7FC+ng3JSu2yGHddZ6m+npECxE4BCw76sGnH9PyWw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="${cssUri}">
-    <script src="${scriptUri}"></script>
 </head>
 
 <body>
@@ -45,9 +44,9 @@
         <div id="panel">
             <div id="axis">
                 <div id="check_axis">
-                    <button class="layui-btn layui-btn-fluid">X</button>
-                    <button class="layui-btn layui-btn-fluid">Y</button>
-                    <button class="layui-btn layui-btn-fluid">Z</button>
+                    <button class="layui-btn layui-btn-fluid" id="X">X</button>
+                    <button class="layui-btn layui-btn-fluid" id="Y">Y</button>
+                    <button class="layui-btn layui-btn-fluid" id="Z">Z</button>
                 </div>
                 <div class="slider">
                     <i class="layui-inline" id="slice"></i>
@@ -57,16 +56,57 @@
                 <canvas id="canvas"></canvas>
             </div>
             <div id="window">
-                <div class="layui-inline" id="windows"></div>
+                <div class="slider">
+                    <i class="layui-inline" id="windows"></i>
+                </div>
             </div>
         </div>
         <div class="padding"></div>
     </div>
+    <script type="text/javascript" src="${scriptUri}"></script>
     <script>
-        // document.addEventListener("DOMContentLoaded", function(event) {
-        //     init();
-        // });
+        function render_slice_slider(min, max, height, value) {
+            document.getElementById('slice').innerHTML = '';
+            layui.slider.render({
+                elem: "#slice",
+                min: min,
+                max: max,
+                value: value,
+                height: height,
+                type: 'vertical',
+                change: function(value) {
+                    window.postMessage({command: 'slice_change', value: value});
+                }
+            });
+        }
+        
+        function render_window_slider(min, max, height, min_threshold, max_threshold) {
+            document.getElementById('windows').innerHTML = '';
+            console.log(height)
+            layui.slider.render({
+                elem: "#windows",
+                min: min,
+                max: max,
+                range: true,
+                height: height,
+                type: 'vertical',
+                value: [min_threshold, max_threshold],
+                change: function(value) {
+                    console.log(value);
+                    window.postMessage({command: 'window_change', min_threshold: value[0], max_threshold: value[1]});
+                }
+            });
+        }
+        
+        window.addEventListener('message', function(event) {
+            let data = event.data;
+            if (data.command === 'render_slice_slider') {
+                render_slice_slider(data.min, data.max, data.height, data.value);
+            }else if (data.command === 'render_window_slider') {
+                render_window_slider(data.min, data.max, data.height, data.min_threshold, data.max_threshold);
+            }
+        });
+        window.postMessage({command: 'ready'});
     </script>
 </body>
-
 </html>

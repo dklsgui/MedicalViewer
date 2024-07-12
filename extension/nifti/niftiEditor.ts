@@ -28,14 +28,14 @@ export class NiftiEditorProvider implements vscode.CustomReadonlyEditorProvider 
         webviewPanel: vscode.WebviewPanel
     ): Promise<void> {
         webviewPanel.webview.options = {
-            enableScripts: true,
+            enableScripts: true
         };
         webviewPanel.webview.html = await this.getHtmlForWebview(webviewPanel.webview);
         webviewPanel.webview.onDidReceiveMessage(async (e) => {
             if (e.command === 'init') {
                 webviewPanel.webview.postMessage({
                     command: 'init',
-                    data: document.fd,
+                    data: uint8ArrayToBase64(document.fd as Uint8Array),
                     path: document.uuid
                 });
             }else if (e.command === 'add_label') {
@@ -59,9 +59,6 @@ export class NiftiEditorProvider implements vscode.CustomReadonlyEditorProvider 
                         });
                     }
                 });
-            }else if (e.command === 'delete_label') {
-                let label_name = e.label_name;
-                document.delete_label(label_name);
             }else if (e.command === 'ready') {
                 console.log('ready');
             }
@@ -97,4 +94,9 @@ export class NiftiEditorProvider implements vscode.CustomReadonlyEditorProvider 
             .replace(/\$\{scriptUri\}/g, scriptUri.toString())
             .replace(/\$\{cssUri\}/g, cssUri.toString());
     }
+}
+
+function uint8ArrayToBase64(uint8Array: Uint8Array) {
+    const buffer = Buffer.from(uint8Array);
+    return buffer.toString('base64');
 }

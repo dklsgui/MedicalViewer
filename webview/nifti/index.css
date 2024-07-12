@@ -113,7 +113,6 @@
     margin: auto;
 }
 #data {
-    background-color: blue;
     flex: 1;
     display: flex;
     justify-content: center;
@@ -127,4 +126,5 @@
 
 #window {
     width: 50px;
+    height: 100%;
 }
