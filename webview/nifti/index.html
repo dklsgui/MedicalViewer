@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nifti Viewer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.9.14/css/layui.css" integrity="sha512-YL3el60sSycKIM/ld2Vf1bD4qd3JvBJ0+y4Ra/rOdZrin7FC+ng3JSu2yGHddZ6m+npECxE4BCw76sGnH9PyWw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="${cssUri}">
+    <script src="${scriptUri}"></script>
+</head>
+
+<body>
+    <div id="main">
+        <div class="padding"></div>
+        <div id="info">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Dimensions</th>
+                        <th>Spacing</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="dimensions">12</td>
+                        <td id="spacing">12</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="padding"></div>
+        <div id="label_workspace">
+            <div id="label_list">
+                <div class="label">
+                    1
+                    <i class="layui-icon layui-icon-close delete-label"></i>
+                </div>           
+            </div>
+            <div id="add_label">
+                <i id="add_label_icon" class="layui-icon layui-icon-addition"></i>
+            </div>
+        </div>
+        <div class="padding"></div>
+        <div id="panel">
+            <div id="axis">
+                <div id="check_axis">
+                    <button class="layui-btn layui-btn-fluid">X</button>
+                    <button class="layui-btn layui-btn-fluid">Y</button>
+                    <button class="layui-btn layui-btn-fluid">Z</button>
+                </div>
+                <div class="slider">
+                    <i class="layui-inline" id="slice"></i>
+                </div>
+            </div>
+            <div id="data">
+                <canvas id="canvas"></canvas>
+            </div>
+            <div id="window">
+                <div class="layui-inline" id="windows"></div>
+            </div>
+        </div>
+        <div class="padding"></div>
+    </div>
+    <script>
+        // document.addEventListener("DOMContentLoaded", function(event) {
+        //     init();
+        // });
+    </script>
+</body>
+
+</html>
