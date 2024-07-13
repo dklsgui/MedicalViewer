@@ -8,6 +8,22 @@ class NiftiType{
     private _path: String;
     private _name: String;
 
+    public static verifyNifti(data: Uint8Array, path: String) {
+        let nii = nifti.Utils.toArrayBuffer(data);
+        if (nifti.isCompressed(nii)) {
+            nii = nifti.decompress(nii);
+        }
+        if (nifti.isNIFTI(nii)) {
+            let header = nifti.readHeader(nii);
+            if (header === null) {
+                return null;
+            }
+            let label = nifti.readImage(header, nii);
+            return new NiftiType(header, label, path, '');
+        }
+        return null;
+    }
+
     constructor(niftiHeader: nifti.NIFTI1 | nifti.NIFTI2, niftiImage: ArrayBuffer, path: String, name: String) {
         this._niftiHeader = niftiHeader;
         this._niftiImage = niftiImage;
@@ -107,22 +123,6 @@ class NiftiViewer {
     }
 }
 
-function verifyNifti(data: Uint8Array, path: String) {
-    let nii = nifti.Utils.toArrayBuffer(data);
-    if (nifti.isCompressed(nii)) {
-        nii = nifti.decompress(nii);
-    }
-    if (nifti.isNIFTI(nii)) {
-        let header = nifti.readHeader(nii);
-        if (header === null) {
-            return null;
-        }
-        let label = nifti.readImage(header, nii);
-        return new NiftiType(header, label, path, '');
-    }
-    return null;
-}
-
 // @ts-ignore
 window.addEventListener('message', event => {
     if (event.data.command === 'ready') {
@@ -165,7 +165,7 @@ function init() {
             // 我也不知道为什么要加这一句，因为如果不加那么将HTML中的js部分会爆layui没定义的错误
             let temp = layui.slider;
             let data = base64ToUint8Array(event.data.data);
-            let nifti_ = verifyNifti(data, event.data.path);
+            let nifti_ = NiftiType.verifyNifti(data, event.data.path);
             if (nifti_ === null) {
                 return;
             }
@@ -185,7 +185,7 @@ function init() {
             sliders.window[1] = niftiViewer.max_pixel;
             update_canvas(niftiViewer.data.niftiHeader, niftiViewer.typeData, sliders);
         }else if (event.data.command === 'add_label') {
-            let nifti_ = verifyNifti(event.data.data, event.data.path);
+            let nifti_ = NiftiType.verifyNifti(event.data.data, event.data.path);
             if (nifti_ === null) {
                 return;
             }
