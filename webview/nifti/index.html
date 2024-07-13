@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="${cssUri}">
 </head>
 
-<body>
+<body>        
     <div id="main">
         <div class="padding"></div>
         <div id="info">
@@ -22,8 +22,8 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td id="dimensions">12</td>
-                        <td id="spacing">12</td>
+                        <td id="dimensions">Loding</td>
+                        <td id="spacing">Loding</td>
                     </tr>
                 </tbody>
             </table>
@@ -31,10 +31,10 @@
         <div class="padding"></div>
         <div id="label_workspace">
             <div id="label_list">
-                <div class="label">
-                    1
+                <!-- <div class="label">
+                    <span>1dwhqodqh</span>
                     <i class="layui-icon layui-icon-close delete-label"></i>
-                </div>           
+                </div>            -->
             </div>
             <div id="add_label">
                 <i id="add_label_icon" class="layui-icon layui-icon-addition"></i>
@@ -44,9 +44,9 @@
         <div id="panel">
             <div id="axis">
                 <div class="buttons">
-                    <button class="layui-btn layui-btn-fluid" id="X">X</button>
-                    <button class="layui-btn layui-btn-fluid" id="Y">Y</button>
-                    <button class="layui-btn layui-btn-fluid" id="Z">Z</button>
+                    <button class="layui-btn layui-btn-fluid" id="X" is_selected="false">X</button>
+                    <button class="layui-btn layui-btn-fluid" id="Y" is_selected="false">Y</button>
+                    <button class="layui-btn layui-btn-fluid" id="Z" is_selected="true">Z</button>
                 </div>
                 <div class="slider">
                     <i class="layui-inline" id="slice"></i>
@@ -92,7 +92,6 @@
         
         function render_window_slider(min, max, height, min_threshold, max_threshold) {
             document.getElementById('windows').innerHTML = '';
-            console.log(height)
             sliders.window = layui.slider.render({
                 elem: "#windows",
                 min: min,

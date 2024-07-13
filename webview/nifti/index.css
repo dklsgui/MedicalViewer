@@ -1,3 +1,4 @@
+
 #main {
     display: flex;
     flex-direction: column;
@@ -52,10 +53,16 @@
     border-radius: 8px;
     background-color: rgb(0, 0, 255);
     border: 1px solid black;
-    min-width: 30px;
+    min-width: 40px;
     text-align: center;
     padding: 1px 4px;
     margin: 2px;
+    display: flex;
+    justify-content: center;
+}
+
+.label > span {
+    flex: 1;
 }
 
 .delete-label {
@@ -98,6 +105,12 @@
     flex-direction: column;
     margin: 5px 2px auto 2px;
 }
+
+#axis>div>button[is_selected=true] {
+    background-color: red;
+    color: white;
+}
+
 .layui-btn+.layui-btn {
     margin: 0px;
     margin-top: 5px;

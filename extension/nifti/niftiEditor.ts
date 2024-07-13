@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { Buffer } from 'buffer';
 import { NiftiDocument } from './niftiDocument';
+import { uint8ArrayToBase64 } from '../../utils/util';
 
 export class NiftiEditorProvider implements vscode.CustomReadonlyEditorProvider {
     public static register(context: vscode.ExtensionContext): vscode.Disposable {
@@ -38,27 +39,50 @@ export class NiftiEditorProvider implements vscode.CustomReadonlyEditorProvider 
                     data: uint8ArrayToBase64(document.fd as Uint8Array),
                     path: document.uuid
                 });
-            }else if (e.command === 'add_label') {
-                vscode.window.showOpenDialog({
+            }else if (e.command === 'show_label_dialog') {
+                let uri = await vscode.window.showOpenDialog({
                     canSelectMany: true,
                     canSelectFiles: true,
                     canSelectFolders: false,
                     filters: {
                         'NIFTI': ['nii', 'nii.gz']
                     }
-                }).then(async (uri) => {
-                    if (uri === undefined || uri.length === 0) {
-                        return;
-                    }
-                    for (let i = 0; i < uri.length; i++) {
-                        const path: String = uri[i].path;
-                        const data: Uint8Array = await vscode.workspace.fs.readFile(uri[0]);
+                });
+                if (uri === undefined || uri.length === 0) {
+                    return;
+                }
+                for (let i = 0; i < uri.length; i++) {
+                    const path: String = uri[i].path;
+                    vscode.workspace.fs.readFile(uri[0]).then((data: Uint8Array) => {
                         webviewPanel.webview.postMessage({
-                            data: data,
+                            command: 'add_label',
+                            data: uint8ArrayToBase64(data),
                             path: path,
                         });
-                    }
-                });
+                    });
+                }
+                // vscode.window.showOpenDialog({
+                //     canSelectMany: true,
+                //     canSelectFiles: true,
+                //     canSelectFolders: false,
+                //     filters: {
+                //         'NIFTI': ['nii', 'nii.gz']
+                //     }
+                // }).then((uri) => {
+                //     if (uri === undefined || uri.length === 0) {
+                //         return;
+                //     }
+                //     for (let i = 0; i < uri.length; i++) {
+                //         const path: String = uri[i].path;
+                //         vscode.workspace.fs.readFile(uri[0]).then((data: Uint8Array) => {
+                //             webviewPanel.webview.postMessage({
+                //                 command: 'add_label',
+                //                 data: uint8ArrayToBase64(data),
+                //                 path: path,
+                //             });
+                //         });
+                //     }
+                // });
             }else if (e.command === 'ready') {
                 console.log('ready');
             }
@@ -94,9 +118,4 @@ export class NiftiEditorProvider implements vscode.CustomReadonlyEditorProvider 
             .replace(/\$\{scriptUri\}/g, scriptUri.toString())
             .replace(/\$\{cssUri\}/g, cssUri.toString());
     }
-}
-
-function uint8ArrayToBase64(uint8Array: Uint8Array) {
-    const buffer = Buffer.from(uint8Array);
-    return buffer.toString('base64');
 }
