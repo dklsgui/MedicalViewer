@@ -2,6 +2,7 @@ import * as nifti from 'nifti-reader-js';
 import { base64ToUint8Array } from '../../utils/util';
 // @ts-ignore
 import *  as layui from 'layui';
+import { privateEncrypt } from 'crypto';
 
 class NiftiType{
     private _niftiHeader: nifti.NIFTI1 | nifti.NIFTI2;
@@ -338,12 +339,35 @@ class Controller {
         });
     }
     
+    private calculate_coordinate(dims: number[],row: number, col: number) {
+        if (this._axis === 3) {
+            return row * dims[0] + col + dims[0] * dims[0] * this._sliders.slice;
+        } else if (this._axis === 2) {
+            // return row * dims[0] + this._sliders.slice + dims[0] * dims[1] * col;
+            return col * dims[0] + this._sliders.slice + dims[0] * dims[1] * row;
+        } else if (this._axis === 1) {
+            return this._sliders.slice * dims[0] + col + dims[0] * dims[1] * row;
+        }
+    }
+
     private drawCanvas() {
         // @ts-ignore
         const canvas = document.getElementById('canvas');
         // get nifti dimensions
-        let cols = this._niftiViewer.data.niftiHeader.dims[1];
-        let rows = this._niftiViewer.data.niftiHeader.dims[2];
+        let cols: number = 0;
+        let rows: number = 0;
+        let dims = this._niftiViewer.data.niftiHeader.dims;
+        dims = dims.slice(1, dims[0] + 1);
+        if (this._axis === 3) {
+            cols = this._niftiViewer.data.niftiHeader.dims[1];
+            rows = this._niftiViewer.data.niftiHeader.dims[2];
+        } else if (this._axis === 2) {
+            cols = this._niftiViewer.data.niftiHeader.dims[1];
+            rows = this._niftiViewer.data.niftiHeader.dims[3];
+        } else if (this._axis === 1) {
+            cols = this._niftiViewer.data.niftiHeader.dims[2];
+            rows = this._niftiViewer.data.niftiHeader.dims[3];
+        }
     
         // set canvas dimensions to nifti slice dimensions
         canvas.width = cols;
@@ -364,7 +388,12 @@ class Controller {
             let rowOffset = row * cols;
     
             for (let col = 0; col < cols; col++) {
-                let offset = sliceOffset + rowOffset + col;
+                // let offset = sliceOffset + rowOffset + col;
+                // console.log(sliceOffset);
+                // console.log(offset);
+                let offset = this.calculate_coordinate(dims, row, col) as number;
+                // console.log(offset);
+                // return;
                 let value = this._niftiViewer.data.niftiImage[offset];
                 let r = 0, g = 0,b = 0;
                 for (let name of this._niftiViewer.selected_label) {
