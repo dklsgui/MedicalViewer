@@ -249,7 +249,9 @@ class Controller {
                     return;
                 }
                 let name = this._niftiViewer.add_label(nifti_);
+                this._niftiViewer.selected_label.push(name);
                 this.add_label(name,path);
+                this.drawCanvas();
             }else if (event.data.command === 'slice_change') {
                 this._sliders.slice = event.data.value;
                 this.drawCanvas();
@@ -302,6 +304,7 @@ class Controller {
 
         div.className = 'label';
         div.setAttribute('title', path);
+        div.style.backgroundColor = 'red';
 
         color_select.className = 'color_select';
         color_select.setAttribute('name', name);
@@ -313,7 +316,7 @@ class Controller {
 
         span.className = 'label_name';
         span.innerText = name;
-        span.setAttribute('is_selected', 'false');
+        span.setAttribute('is_selected', 'true');
         span.style.userSelect = 'none';
         span.addEventListener('click', () => {
             if (span.getAttribute('is_selected') === 'false') {

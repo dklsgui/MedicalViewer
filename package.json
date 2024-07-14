@@ -20,7 +20,6 @@
         "nifti",
         "Other"
     ],
-    "icon": "neuro-viewer.png",
     "galleryBanner": {
         "color": "#1e1e1e",
         "theme": "dark"

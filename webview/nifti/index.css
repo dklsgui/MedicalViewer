@@ -14,6 +14,7 @@
 #info {
     margin: auto;
     width: 90%;
+    color: gray;
     /* height: 10%; */
     /* max-height: 100px; */
 }
@@ -92,6 +93,7 @@
 
 #add_label_icon {
     font-size: 20px;
+    color: gray;
 }
 
 #panel {
