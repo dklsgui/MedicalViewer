@@ -1,7 +1,7 @@
 {
     "name": "medical-viewer",
     "displayName": "MedicalViewer",
-    "description": "暂无",
+    "description": "A simple medical image viewer",
     "version": "0.0.1",
     "publisher": "dklsgui",
     "author": {
@@ -11,15 +11,27 @@
         "vscode": "^1.64.0"
     },
     "categories": [
+        "Visualization",
+        "Data Science",
         "Other"
     ],
     "keywords": [
         "medical",
-        "viewer",
         "nifti",
-        "dicom",
         "Other"
     ],
+    "icon": "neuro-viewer.png",
+    "galleryBanner": {
+        "color": "#1e1e1e",
+        "theme": "dark"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/dklsgui/MedicalViewer.git"
+    },
+    "bugs": {
+        "url": "https://github.com/dklsgui/MedicalViewer/issues"
+    },
     "activationEvents": [],
     "main": "./dist/extension-vscode.js",
     "contributes": {
@@ -53,7 +65,7 @@
     "devDependencies": {
         "@types/mocha": "^10.0.7",
         "@types/node": "20.x",
-        "@types/vscode": "^1.91.0",
+        "@types/vscode": "^1.64.0",
         "@typescript-eslint/eslint-plugin": "^7.14.1",
         "@typescript-eslint/parser": "^7.11.0",
         "@vscode/test-cli": "^0.0.9",

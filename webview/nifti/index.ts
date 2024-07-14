@@ -2,7 +2,6 @@ import * as nifti from 'nifti-reader-js';
 import { base64ToUint8Array } from '../../utils/util';
 // @ts-ignore
 import *  as layui from 'layui';
-import { privateEncrypt } from 'crypto';
 
 class NiftiType{
     private _niftiHeader: nifti.NIFTI1 | nifti.NIFTI2;
@@ -180,7 +179,7 @@ class Controller {
     private _vscode: any;
     // @ts-ignore
     private _niftiViewer: NiftiViewer;
-    private readonly _label_alpha = 0.3;
+    private readonly _label_alpha = 0.45;
     private _axis: number = 3;
     private _sliders = {
         slice: 0,
@@ -258,6 +257,21 @@ class Controller {
                 this._sliders.window[0] = event.data.min_threshold;
                 this._sliders.window[1] = event.data.max_threshold;
                 this.drawCanvas();
+            }else if (event.data.command === 'color_change') {
+                let name = event.data.name;
+                let color = event.data.color;
+                // @ts-ignore
+                document.querySelector(`div[name="${name}"]`).style.backgroundColor = color;
+                if (this._niftiViewer.label.has(name)) {
+                    color = color.replace('rgb(', '').replace(')', '');
+                    let r = parseInt(color.split(',')[0]);
+                    let g = parseInt(color.split(',')[1]);
+                    let b = parseInt(color.split(',')[2]);
+                    (this._niftiViewer.label.get(name) as NiftiType).color = [r, g, b];
+                    if (this._niftiViewer.selected_label.includes(name)) {
+                        this.drawCanvas();
+                    }
+                }
             }
         });
         // @ts-ignore
@@ -280,10 +294,24 @@ class Controller {
         // @ts-ignore
         let span = document.createElement('span');
         // @ts-ignore
+        let color_select = document.createElement('div');
+        // @ts-ignore
         let i = document.createElement('i');
+
+        let color = this._niftiViewer.label.get(name)?.color.join(',') as String;
 
         div.className = 'label';
         div.setAttribute('title', path);
+
+        color_select.className = 'color_select';
+        color_select.setAttribute('name', name);
+        color_select.style.backgroundColor = 'rgb(' + color + ')';
+        color_select.addEventListener('click', () => {
+            // @ts-ignore
+            document.querySelector(`div[name="${name}"]`).children[0].click();
+        });
+
+        span.className = 'label_name';
         span.innerText = name;
         span.setAttribute('is_selected', 'false');
         span.style.userSelect = 'none';
@@ -300,16 +328,23 @@ class Controller {
             this.drawCanvas();
         });
         i.className = 'layui-icon layui-icon-close delete_label';
-        // div.innerText = name;
         i.addEventListener('click', () => {
             div.remove();
             if (this._niftiViewer.delete_label(name)) {
                 this.drawCanvas();
             }
         });
+        div.appendChild(color_select);
         div.appendChild(span);
         div.appendChild(i);
         labelList.appendChild(div);
+        // @ts-ignore
+        window.postMessage({
+            command: 'render_colorpicker',
+            elem: `div[name="${name}"]`,
+            color: color,
+            name: name
+        }); // 重新渲染颜色选择器
     }
 
     private create_slice_slider(min: number, max: number, value: number) {
@@ -399,7 +434,6 @@ class Controller {
         return destImageData;
     }
 
-
     private drawCanvas() {
         // @ts-ignore
         const canvas = document.getElementById('canvas');
@@ -420,7 +454,9 @@ class Controller {
             cols = this._niftiViewer.data.niftiHeader.dims[2];
             rows = this._niftiViewer.data.niftiHeader.dims[3];
         }
-    
+        
+        // canvas.width = cols;
+        // canvas.height = rows;
         let scale = Math.min(data.clientWidth / cols, data.clientHeight / rows) * 0.95;
         canvas.width = Math.floor(cols * scale);
         canvas.height = Math.floor(rows * scale);
@@ -458,6 +494,7 @@ class Controller {
         scaleCanvasImageData = this.bilinearInterpolation(canvasImageData, scaleCanvasImageData, canvas.width, canvas.height);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.putImageData(scaleCanvasImageData, 0, 0);
+        // ctx.putImageData(canvasImageData, 0, 0);
     }
 }
 

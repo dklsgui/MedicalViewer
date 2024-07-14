@@ -61,7 +61,20 @@
     justify-content: center;
 }
 
-.label > span {
+.label > .color_select {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin: auto;
+    margin-right: 5px;
+    border: 1px solid black;
+}
+
+.label > .color_select > div {
+    display: none !important;
+}
+
+.label > .label_name {
     flex: 1;
 }
 

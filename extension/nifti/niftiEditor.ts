@@ -6,7 +6,13 @@ import { uint8ArrayToBase64 } from '../../utils/util';
 export class NiftiEditorProvider implements vscode.CustomReadonlyEditorProvider {
     public static register(context: vscode.ExtensionContext): vscode.Disposable {
         const provider = new NiftiEditorProvider(context);
-        const providerRegistration = vscode.window.registerCustomEditorProvider(NiftiEditorProvider.viewType, provider);
+        const providerRegistration = vscode.window.registerCustomEditorProvider(
+            NiftiEditorProvider.viewType, 
+            provider, {
+                webviewOptions: {
+                    retainContextWhenHidden: true,
+                }
+            });
         return providerRegistration;
     }
 
@@ -29,7 +35,7 @@ export class NiftiEditorProvider implements vscode.CustomReadonlyEditorProvider 
         webviewPanel: vscode.WebviewPanel
     ): Promise<void> {
         webviewPanel.webview.options = {
-            enableScripts: true
+            enableScripts: true,
         };
         webviewPanel.webview.html = await this.getHtmlForWebview(webviewPanel.webview);
         webviewPanel.webview.onDidReceiveMessage(async (e) => {

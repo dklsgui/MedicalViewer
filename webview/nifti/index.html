@@ -37,7 +37,7 @@
                 </div>            -->
             </div>
             <div id="add_label">
-                <i id="add_label_icon" class="layui-icon layui-icon-addition"></i>
+                <i id="add_label_icon" class="layui-icon layui-icon-addition" title="add label"></i>
             </div>
         </div>
         <div class="padding"></div>
@@ -57,9 +57,9 @@
             </div>
             <div id="window">
                 <div class="buttons">
-                    <button class="layui-btn layui-btn-fluid" id="A">X</button>
-                    <button class="layui-btn layui-btn-fluid" id="B">Y</button>
-                    <button class="layui-btn layui-btn-fluid" id="C">Z</button>
+                    <button class="layui-btn layui-btn-fluid" id="A" style="visibility: hidden;">X</button>
+                    <button class="layui-btn layui-btn-fluid" id="B" style="visibility: hidden;">Y</button>
+                    <button class="layui-btn layui-btn-fluid" id="C" style="visibility: hidden;">Z</button>
                 </div>
                 <div class="slider">
                     <i class="layui-inline" id="windows"></i>
@@ -112,6 +112,23 @@
                 render_slice_slider(data.min, data.max, data.height, data.value);
             }else if (data.command === 'render_window_slider') {
                 render_window_slider(data.min, data.max, data.height, data.min_threshold, data.max_threshold);
+            } else if (data.command === 'render_colorpicker') {
+                layui.use(function(){
+                    var colorpicker = layui.colorpicker;
+                    colorpicker.render({ // eg1
+                        elem: data.elem, // 绑定元素
+                        color: data.color,
+                        format: 'rgb',
+                        // @ts-ignore
+                        change: function(color){ // 颜色改变的回调
+                            window.postMessage({
+                                command: 'color_change', 
+                                color: color,
+                                name: data.name
+                            });
+                        }
+                    });
+                });
             }
         });
         document.getElementById('canvas').addEventListener('wheel', function(event) {
