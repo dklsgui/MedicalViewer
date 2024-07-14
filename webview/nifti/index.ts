@@ -341,19 +341,71 @@ class Controller {
     
     private calculate_coordinate(dims: number[],row: number, col: number) {
         if (this._axis === 3) {
-            return row * dims[0] + col + dims[0] * dims[0] * this._sliders.slice;
+            return col + dims[0] * row + dims[0] * dims[1] * this._sliders.slice;
+            // return row * dims[0] + col + dims[0] * dims[0] * this._sliders.slice;
         } else if (this._axis === 2) {
             // return row * dims[0] + this._sliders.slice + dims[0] * dims[1] * col;
-            return col * dims[0] + this._sliders.slice + dims[0] * dims[1] * row;
+            return col + dims[0] * this._sliders.slice + dims[0] * dims[1] * (dims[2] - row - 1);
         } else if (this._axis === 1) {
-            return this._sliders.slice * dims[0] + col + dims[0] * dims[1] * row;
+            // return this._sliders.slice * dims[0] + col + dims[0] * dims[1] * row;
+            return this._sliders.slice + dims[0] * col + dims[0] * dims[1] * (dims[2] - row - 1);
         }
     }
+
+    // 双线性插值法
+    private bilinearInterpolation(srcImageData: any, destImageData: any, destWidth: number, destHeight: number) {
+        const srcWidth = srcImageData.width;
+        const srcHeight = srcImageData.height;
+        // const destImageData = ctx.createImageData(destWidth, destHeight);
+        
+        const srcData = srcImageData.data;
+        const destData = destImageData.data;
+
+        const xRatio = srcWidth / destWidth;
+        const yRatio = srcHeight / destHeight;
+
+        for (let y = 0; y < destHeight; y++) {
+            for (let x = 0; x < destWidth; x++) {
+                const destIndex = (y * destWidth + x) * 4;
+                
+                const srcX = x * xRatio;
+                const srcY = y * yRatio;
+
+                const xFloor = Math.floor(srcX);
+                const yFloor = Math.floor(srcY);
+                const xCeil = Math.min(srcWidth - 1, Math.ceil(srcX));
+                const yCeil = Math.min(srcHeight - 1, Math.ceil(srcY));
+
+                const topLeftIndex = (yFloor * srcWidth + xFloor) * 4;
+                const topRightIndex = (yFloor * srcWidth + xCeil) * 4;
+                const bottomLeftIndex = (yCeil * srcWidth + xFloor) * 4;
+                const bottomRightIndex = (yCeil * srcWidth + xCeil) * 4;
+
+                for (let i = 0; i < 4; i++) {
+                    const topLeft = srcData[topLeftIndex + i];
+                    const topRight = srcData[topRightIndex + i];
+                    const bottomLeft = srcData[bottomLeftIndex + i];
+                    const bottomRight = srcData[bottomRightIndex + i];
+
+                    const top = topLeft + (topRight - topLeft) * (srcX - xFloor);
+                    const bottom = bottomLeft + (bottomRight - bottomLeft) * (srcX - xFloor);
+                    const value = top + (bottom - top) * (srcY - yFloor);
+
+                    destData[destIndex + i] = value;
+                }
+            }
+        }
+
+        return destImageData;
+    }
+
 
     private drawCanvas() {
         // @ts-ignore
         const canvas = document.getElementById('canvas');
-        // get nifti dimensions
+        // @ts-ignore
+        const data = document.getElementById('data');
+
         let cols: number = 0;
         let rows: number = 0;
         let dims = this._niftiViewer.data.niftiHeader.dims;
@@ -369,31 +421,17 @@ class Controller {
             rows = this._niftiViewer.data.niftiHeader.dims[3];
         }
     
-        // set canvas dimensions to nifti slice dimensions
-        canvas.width = cols;
-        canvas.height = rows;
+        let scale = Math.min(data.clientWidth / cols, data.clientHeight / rows) * 0.95;
+        canvas.width = Math.floor(cols * scale);
+        canvas.height = Math.floor(rows * scale);
     
-        // make canvas image data
         let ctx = canvas.getContext("2d");
-        let canvasImageData = ctx.createImageData(canvas.width, canvas.height);
+        let canvasImageData = ctx.createImageData(cols, rows);
     
-        // convert raw data to typed array based on nifti datatype
-    
-        // offset to specified slice
-        let sliceSize = cols * rows;
-        let sliceOffset = sliceSize * this._sliders.slice;
-    
-        // draw pixels
         for (let row = 0; row < rows; row++) {
             let rowOffset = row * cols;
-    
             for (let col = 0; col < cols; col++) {
-                // let offset = sliceOffset + rowOffset + col;
-                // console.log(sliceOffset);
-                // console.log(offset);
                 let offset = this.calculate_coordinate(dims, row, col) as number;
-                // console.log(offset);
-                // return;
                 let value = this._niftiViewer.data.niftiImage[offset];
                 let r = 0, g = 0,b = 0;
                 for (let name of this._niftiViewer.selected_label) {
@@ -409,7 +447,6 @@ class Controller {
                 value = Math.min(Math.max(value, this._sliders.window[0]), this._sliders.window[1]);
                 value = (value - this._sliders.window[0]) / (this._sliders.window[1] - this._sliders.window[0]) * 255;
                 value = value * (1 - this._label_alpha);
-
     
                 canvasImageData.data[(rowOffset + col) * 4] = Math.round(value + r);
                 canvasImageData.data[(rowOffset + col) * 4 + 1] = Math.round(value + g);
@@ -417,8 +454,10 @@ class Controller {
                 canvasImageData.data[(rowOffset + col) * 4 + 3] = 0xFF;
             }
         }
-        ctx.putImageData(canvasImageData, 0, 0);
-        console.log("绘制完成");
+        let scaleCanvasImageData = ctx.createImageData(canvas.width, canvas.height);
+        scaleCanvasImageData = this.bilinearInterpolation(canvasImageData, scaleCanvasImageData, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.putImageData(scaleCanvasImageData, 0, 0);
     }
 }
 
@@ -428,189 +467,3 @@ window.addEventListener('message', event => {
         new Controller();
     }
 });
-
-// function base64ToUint8Array(base64: any): Uint8Array{
-//     // @ts-ignore
-//     const binaryString = window.atob(base64);
-//     const len = binaryString.length;
-//     const bytes = new Uint8Array(len);
-//     for (let i = 0; i < len; i++) {
-//         bytes[i] = binaryString.charCodeAt(i);
-//     }
-//     return bytes;
-// }
-
-// function init() {
-//     // @ts-ignore
-//     const vscode = acquireVsCodeApi();
-//     let niftiViewer: NiftiViewer;
-//     let sliders = {
-//         slice: 0,
-//         window: [0, 0]
-//     };
-//     // @ts-ignore
-//     const add_label_icon = document.getElementById('add_label_icon');
-    
-//     add_label_icon.addEventListener('click', () => {
-//         vscode.postMessage({
-//             command: 'add_label'
-//         });
-//     });
-    
-//     // 添加插件端传输数据的监听
-//     // @ts-ignore
-//     window.addEventListener('message', event => {
-//         if (event.data.command === 'init') {
-//             // 我也不知道为什么要加这一句，因为如果不加那么将HTML中的js部分会爆layui没定义的错误
-//             let temp = layui.slider;
-//             let data = base64ToUint8Array(event.data.data);
-//             let nifti_ = NiftiType.verifyNifti(data, event.data.path);
-//             if (nifti_ === null) {
-//                 return;
-//             }
-//             niftiViewer = new NiftiViewer(nifti_);
-//             // @ts-ignore
-//             window.postMessage({
-//                 command: 'render_slice_slider',
-//                 min: 0,
-//                 max: nifti_.niftiHeader.dims[3] - 1,
-//                 value: Math.round(nifti_.niftiHeader.dims[3] / 2)
-//             });
-//             create_slice_slider(0, niftiViewer.data.niftiHeader.dims[3] - 1, Math.round(niftiViewer.data.niftiHeader.dims[3] / 2));
-
-//             create_window_slider(niftiViewer.min_pixel, niftiViewer.max_pixel, niftiViewer.min_pixel, niftiViewer.max_pixel);
-//             sliders.slice = Math.round(niftiViewer.data.niftiHeader.dims[3] / 2);
-//             sliders.window[0] = niftiViewer.min_pixel;
-//             sliders.window[1] = niftiViewer.max_pixel;
-//             update_canvas(niftiViewer.data.niftiHeader, niftiViewer.typeData, sliders);
-//         }else if (event.data.command === 'add_label') {
-//             let nifti_ = NiftiType.verifyNifti(event.data.data, event.data.path);
-//             if (nifti_ === null) {
-//                 return;
-//             }
-//             niftiViewer.add_label(nifti_);
-//             add_label(event.data.label_list,vscode);
-//         }else if (event.data.command === 'slice_change') {
-//             sliders.slice = event.data.value;
-//             update_canvas(niftiViewer.data.niftiHeader, niftiViewer.typeData, sliders);
-//         }else if (event.data.command === 'window_change') {
-//             sliders.window[0] = event.data.min_threshold;
-//             sliders.window[1] = event.data.max_threshold;
-//             update_canvas(niftiViewer.data.niftiHeader, niftiViewer.typeData, sliders);
-//         }
-//     });
-//     // @ts-ignore
-//     window.addEventListener('resize', () => {
-//         create_slice_slider(0, niftiViewer.data.niftiHeader.dims[3] - 1, sliders.slice);
-//         create_window_slider(niftiViewer.min_pixel, niftiViewer.max_pixel, sliders.window[0], sliders.window[1]);
-//         update_canvas(niftiViewer.data.niftiHeader, niftiViewer.typeData, sliders);
-//     });
-
-//     vscode.postMessage({
-//         command: 'init'
-//     });
-// }
-
-// function add_label(label_list: String[], vscode: any) {
-//     // @ts-ignore
-//     const labelList = document.getElementById('label_list');
-//     label_list.forEach(element => {
-//         // @ts-ignore
-//         let div = document.createElement('div');
-//         // @ts-ignore
-//         let i = document.createElement('i');
-
-//         div.className = 'label';
-//         div.setAttribute('name', element);
-//         i.className = 'layui-icon layui-icon-close delete_label';
-//         div.innerText = element;
-//         i.addEventListener('click', () => {
-//             div.remove();
-//             vscode.postMessage({
-//                 command: 'delete_label',
-//                 label_name: element
-//             });
-//         });
-//         div.appendChild(i);
-//         labelList.appendChild(div);
-//     });
-// }
-
-// function create_slice_slider(min: number, max: number, value: number) {
-//     // @ts-ignore
-//     let height = document.querySelector("#axis>div[class=slider]").clientHeight * 0.8;
-//     // @ts-ignore
-//     window.postMessage({
-//         command: 'render_slice_slider',
-//         min: min,
-//         max: max,
-//         value: value,
-//         height: height
-//     });
-// }
-
-// function create_window_slider(min: number, max: number, min_threshold: number, max_threshold: number) {
-//     // @ts-ignore
-//     let height = document.querySelector("#window>div[class=slider]").clientHeight * 0.8;
-//     // @ts-ignore
-//     window.postMessage({
-//         command: 'render_window_slider',
-//         min: min,
-//         max: max,
-//         min_threshold: min_threshold,
-//         max_threshold: max_threshold,
-//         height: height
-//     });
-// }
-
-// function update_canvas(niftiHeader: nifti.NIFTI1 | nifti.NIFTI2, typeData: any, sliders: any) {
-//     // @ts-ignore
-//     const canvas = document.getElementById('canvas');
-//     readNIFTI(niftiHeader, typeData, canvas, sliders.slice);
-// }
-
-// function readNIFTI(niftiHeader: nifti.NIFTI1 | nifti.NIFTI2, typeData: any, canvas: any, slice: any) {
-
-//     // set up slider
-//     var slices = niftiHeader.dims[3];
-
-//     // draw slice
-//     drawCanvas(canvas, slice, niftiHeader, typeData);
-// }
-
-// function drawCanvas(canvas: any, slice: number, niftiHeader: nifti.NIFTI1 | nifti.NIFTI2, typeData: any) {
-//     // get nifti dimensions
-//     var cols = niftiHeader.dims[1];
-//     var rows = niftiHeader.dims[2];
-
-//     // set canvas dimensions to nifti slice dimensions
-//     canvas.width = cols;
-//     canvas.height = rows;
-
-//     // make canvas image data
-//     var ctx = canvas.getContext("2d");
-//     var canvasImageData = ctx.createImageData(canvas.width, canvas.height);
-
-//     // convert raw data to typed array based on nifti datatype
-
-//     // offset to specified slice
-//     var sliceSize = cols * rows;
-//     var sliceOffset = sliceSize * slice;
-
-//     // draw pixels
-//     for (var row = 0; row < rows; row++) {
-//         var rowOffset = row * cols;
-
-//         for (var col = 0; col < cols; col++) {
-//             var offset = sliceOffset + rowOffset + col;
-//             var value = typeData[offset];
-
-//             canvasImageData.data[(rowOffset + col) * 4] = value & 0xFF;
-//             canvasImageData.data[(rowOffset + col) * 4 + 1] = value & 0xFF;
-//             canvasImageData.data[(rowOffset + col) * 4 + 2] = value & 0xFF;
-//             canvasImageData.data[(rowOffset + col) * 4 + 3] = 0xFF;
-//         }
-//     }
-//     ctx.putImageData(canvasImageData, 0, 0);
-//     console.log("绘制完成");
-// }

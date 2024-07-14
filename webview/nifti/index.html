@@ -118,9 +118,9 @@
             if (event.deltaY === 0) {
                 return;
             }else if (event.deltaY > 0) {
-                sliders.slice.setValue(sliders.slice.config.value + 1);
-            }else {
                 sliders.slice.setValue(sliders.slice.config.value - 1);
+            }else {
+                sliders.slice.setValue(sliders.slice.config.value + 1);
             }
         });
         window.postMessage({command: 'ready'});
