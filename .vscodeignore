@@ -16,3 +16,4 @@ extension
 test
 utils
 webview
+*.vsix

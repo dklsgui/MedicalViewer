@@ -225,6 +225,7 @@ class Controller {
                 if (nifti_ === null) {
                     return;
                 }
+                console.log(1);
                 this._niftiViewer = new NiftiViewer(nifti_);
                 let dims = nifti_.niftiHeader.dims;
 
@@ -239,7 +240,7 @@ class Controller {
                 this._sliders.slice = Math.round(this._niftiViewer.data.niftiHeader.dims[3] / 2);
                 this._sliders.window[0] = this._niftiViewer.min_pixel;
                 this._sliders.window[1] = this._niftiViewer.max_pixel;
-
+                console.log(2);
                 this.drawCanvas();
             }else if (event.data.command === 'add_label') {
                 let data = base64ToUint8Array(event.data.data);
