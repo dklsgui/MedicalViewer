@@ -31,7 +31,7 @@
     "bugs": {
         "url": "https://github.com/dklsgui/MedicalViewer/issues"
     },
-    "icon": "./medical-viewer.png",
+    "icon": "medical-viewer.png",
     "activationEvents": [],
     "main": "dist/extension-vscode.js",
     "contributes": {
