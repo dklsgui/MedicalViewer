@@ -55,7 +55,9 @@
                 "medicalViewer.alpha": {
                     "type": "number",
                     "default": 0.4,
-                    "description": "%description.medicalViewer.alpha%"
+                    "description": "%description.medicalViewer.alpha%",
+                    "minimum": 0,
+                    "maximum": 1
                 }
             }
         }
