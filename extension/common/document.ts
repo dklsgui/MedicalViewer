@@ -1,12 +1,9 @@
 import * as vscode from 'vscode';
-import * as nifti from 'nifti-reader-js';
-import { count } from 'console';
 
-export class NiftiDocument implements vscode.CustomDocument {
+export class Document implements vscode.CustomDocument {
     private readonly _uri: vscode.Uri;
     private readonly _uuid: string;
     private readonly _fd: number | Uint8Array;
-    private readonly _label: Map<String,[String, ArrayBuffer, nifti.NIFTI1 | nifti.NIFTI2]> = new Map();
 
     constructor(
         uri: vscode.Uri,

@@ -48,6 +48,15 @@
                         "filenamePattern": "*.nii.gz"
                     }
                 ]
+            },{
+                "viewType": "medical-viewer.Dicom",
+                "displayName": "Dicom Viewer",
+                "priority": "default",
+                "selector": [
+                    {
+                        "filenamePattern": "*.dcm"
+                    }
+                ]
             }
         ],
         "configuration": {

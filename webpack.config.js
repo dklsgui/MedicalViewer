@@ -73,11 +73,31 @@ const niftiWebview = {
     plugins: [
         new CopyPlugin({
             patterns: [
-                { from: './webview/**/*.html', to: '' },
-                { from: './webview/**/*.css', to: '' },
+                { from: './webview/nifti/**/*.html', to: '' },
+                { from: './webview/nifti/**/*.css', to: '' },
             ],
         }),
     ],
 };
 
-module.exports = [extension, niftiWebview];
+const dicomWebview = {
+    ...general,
+    target: 'web',
+    entry: {
+        webview_dicom: './webview/dicom/index.ts'
+    },
+    output: {
+        ...general.output,
+        filename: 'webview/dicom/index.js',
+    },
+    plugins: [
+        new CopyPlugin({
+            patterns: [
+                { from: './webview/dicom/**/*.html', to: '' },
+                { from: './webview/dicom/**/*.css', to: '' },
+            ],
+        }),
+    ],
+};
+
+module.exports = [extension, niftiWebview, dicomWebview];

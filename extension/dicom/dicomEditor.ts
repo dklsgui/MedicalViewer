@@ -3,11 +3,11 @@ import { Buffer } from 'buffer';
 import { Document } from '../common/document';
 import { uint8ArrayToBase64 } from '../../utils/util';
 
-export class NiftiEditorProvider implements vscode.CustomReadonlyEditorProvider {
+export class DicomEditorProvider implements vscode.CustomReadonlyEditorProvider {
     public static register(context: vscode.ExtensionContext): vscode.Disposable {
-        const provider = new NiftiEditorProvider(context);
+        const provider = new DicomEditorProvider(context);
         const providerRegistration = vscode.window.registerCustomEditorProvider(
-            NiftiEditorProvider.viewType, 
+            DicomEditorProvider.viewType, 
             provider, {
                 webviewOptions: {
                     retainContextWhenHidden: true,
@@ -16,7 +16,7 @@ export class NiftiEditorProvider implements vscode.CustomReadonlyEditorProvider 
         return providerRegistration;
     }
 
-    private static readonly viewType = 'medical-viewer.Nifti';
+    private static readonly viewType = 'medical-viewer.Dicom';
 
     constructor(
         private readonly context: vscode.ExtensionContext
@@ -51,7 +51,7 @@ export class NiftiEditorProvider implements vscode.CustomReadonlyEditorProvider 
                     canSelectFiles: true,
                     canSelectFolders: false,
                     filters: {
-                        'NIFTI': ['nii', 'nii.gz']
+                        'DICOM': ['dcm']
                     }
                 });
                 if (uri === undefined || uri.length === 0) {
@@ -67,30 +67,6 @@ export class NiftiEditorProvider implements vscode.CustomReadonlyEditorProvider 
                         });
                     });
                 }
-                // vscode.window.showOpenDialog({
-                //     canSelectMany: true,
-                //     canSelectFiles: true,
-                //     canSelectFolders: false,
-                //     filters: {
-                //         'NIFTI': ['nii', 'nii.gz']
-                //     }
-                // }).then((uri) => {
-                //     if (uri === undefined || uri.length === 0) {
-                //         return;
-                //     }
-                //     for (let i = 0; i < uri.length; i++) {
-                //         const path: String = uri[i].path;
-                //         vscode.workspace.fs.readFile(uri[0]).then((data: Uint8Array) => {
-                //             webviewPanel.webview.postMessage({
-                //                 command: 'add_label',
-                //                 data: uint8ArrayToBase64(data),
-                //                 path: path,
-                //             });
-                //         });
-                //     }
-                // });
-            }else if (e.command === 'ready') {
-                console.log('ready');
             }
         });
         webviewPanel.onDidDispose(() => {
@@ -106,18 +82,18 @@ export class NiftiEditorProvider implements vscode.CustomReadonlyEditorProvider 
             vscode.Uri.joinPath(
                 ext.extensionUri,
                 'dist',
-                'webview/nifti/index.css'
+                'webview/dicom/index.css'
             )
         );
         const scriptUri = webview.asWebviewUri(
             vscode.Uri.joinPath(
                 ext.extensionUri,
                 'dist',
-                'webview/nifti/index.js'
+                'webview/dicom/index.js'
             )
         );
         const uri = ext.extensionUri.with({
-            path: ext.extensionUri.path + '/dist/webview/nifti/index.html'
+            path: ext.extensionUri.path + '/dist/webview/dicom/index.html'
         });
         const html = await vscode.workspace.fs.readFile(uri);
         return Buffer.from(html).toString('utf8')
