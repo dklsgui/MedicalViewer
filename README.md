@@ -1,4 +1,4 @@
-# [Medical Viewer](https://marketplace.visualstudio.com/items?itemName=jiangjie.medical-viewer)
+## [Medical Viewer](https://marketplace.visualstudio.com/items?itemName=dklsgui.medical-viewer)
 
 ## [GitHub Repo](https://github.com/dklsgui/MedicalViewer) 
 
