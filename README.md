@@ -2,7 +2,7 @@
 
 ## [GitHub Repo](https://github.com/dklsgui/MedicalViewer) 
 
-If you need to work with data in the medical image field, then this extension can help you, which allows users to visualize the volume data in medical image files and run on it to add label data. 
+This is a vscode extension. If you need to work with data in the medical image field, then this extension can help you, which allows users to visualize the volume data in medical image files and run on it to add label data. 
 
 Currently supported data formats: `nii`, `nii.gz`
 
