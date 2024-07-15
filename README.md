@@ -8,7 +8,7 @@ Currently supported data formats: `nii`, `nii.gz`
 
 
 
-[![Preview in vscode.dev](https://img.shields.io/badge/preview%20in-vscode.dev-blue)](https://marketplace.visualstudio.com/items?itemName=jiangjie.medical-viewer) [![Version](https://vsmarketplacebadges.dev/version/jiangjie.medical-viewer.png)](https://marketplace.visualstudio.com/items?itemName=jiangjie.medical-viewer) [![Installs](https://vsmarketplacebadges.dev/installs/jiangjie.medical-viewer.png)](https://marketplace.visualstudio.com/items?itemName=jiangjie.medical-viewer)
+[![Preview in vscode.dev](https://img.shields.io/badge/preview%20in-vscode.dev-blue)](https://marketplace.visualstudio.com/items?itemName=dklsgui.medical-viewer) [![Version](https://vsmarketplacebadges.dev/version/dklsgui.medical-viewer.png)](https://marketplace.visualstudio.com/items?itemName=dklsgui.medical-viewer) [![Installs](https://vsmarketplacebadges.dev/installs/dklsgui.medical-viewer.png)](https://marketplace.visualstudio.com/items?itemName=dklsgui.medical-viewer)
 
 
 ## Features
