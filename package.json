@@ -33,7 +33,7 @@
     },
     "icon": "./medical-viewer.png",
     "activationEvents": [],
-    "main": "./dist/extension-vscode.js",
+    "main": "dist/extension-vscode.js",
     "contributes": {
         "customEditors": [
             {
