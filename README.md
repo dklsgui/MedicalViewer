@@ -20,14 +20,14 @@ Currently supported data formats: `nii`, `nii.gz`
 - Switch slice: Switch the slice of the image
 - Switch axis: Switch the axis of the image
 
-<video src="./screenshots/windowing_swicth-slice_switch-axis.mp4">
+![Windowing and Switch slice and Switch axis](./screenshots/windowing_swicth-slice_switch-axis.gif)
 
 ### Add label
 - Add label: Add label data to the image
 - Delete label: Delete label data from the image
 - Select label color: Select the color of the label
 
-<video src="./screenshots/add_label.mp4">
+![add-label](./screenshots/add_label.gif)
 
 ## CHANGELOG
 
