@@ -29,10 +29,6 @@ Currently supported data formats: `nii`, `nii.gz`
 
 ![add-label](./screenshots/add_label.gif)
 
-## CHANGELOG
-
-[CHANGELOG.MD](https://github.com/dklsgui/MedicalViewer/blob/master/CHANGELOG.md)
-
 
 ## Contributors
 
