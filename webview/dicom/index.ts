@@ -5,7 +5,7 @@ import *  as layui from 'layui';
 
 class DicomType{
     private _data_dicom: dicomParser.DataSet;
-    private _pixel_data: Uint16Array;
+    private _pixel_data: any;
     private _rows: number;
     private _cols: number;
     private _path: String;
@@ -15,18 +15,43 @@ class DicomType{
     public static verifyDicom(data: Uint8Array, path: String) {
         try{
             let data_dicom =  dicomParser.parseDicom(data);
+            let dataType;
+            const bitsAllocated = data_dicom.uint16('x00280100'); // Bits Allocated (0028,0100)
+            const pixelRepresentation = data_dicom.uint16('x00280103'); // Pixel Representation (0028,0103)
+            if (bitsAllocated === 8) {
+                dataType = pixelRepresentation === 0 ? 'Uint8' : 'Int8';
+            } else if (bitsAllocated === 16) {
+                dataType = pixelRepresentation === 0 ? 'Uint16' : 'Int16';
+            } else if (bitsAllocated === 32) {
+                // 32 位可能是浮点数
+                dataType = pixelRepresentation === 0 ? 'Float32' : 'Int32';
+            } else {
+                return null;
+            }
             let pixel_data_element = data_dicom.elements.x7fe00010;
-            let pixel_data = new Uint16Array(data.buffer, pixel_data_element.dataOffset, pixel_data_element.length / 2);
+            let pixel_data = null;
+            if(dataType === 'Uint8') {
+                pixel_data = new Uint8Array(data.buffer, pixel_data_element.dataOffset, pixel_data_element.length);
+            }else if(dataType === 'Int8') {
+                pixel_data = new Int8Array(data.buffer, pixel_data_element.dataOffset, pixel_data_element.length);
+            }else if(dataType === 'Uint16') {
+                pixel_data = new Uint16Array(data.buffer, pixel_data_element.dataOffset, pixel_data_element.length / 2);
+            }else if(dataType === 'Int16') {
+                pixel_data = new Int16Array(data.buffer, pixel_data_element.dataOffset, pixel_data_element.length / 2);
+            }else if(dataType === 'Float32') {
+                pixel_data = new Float32Array(data.buffer, pixel_data_element.dataOffset, pixel_data_element.length / 4);
+            }else if(dataType === 'Int32') {
+                pixel_data = new Int32Array(data.buffer, pixel_data_element.dataOffset, pixel_data_element.length / 4);
+            }
             let rows = data_dicom.uint16('x00280010');
             let cols = data_dicom.uint16('x00280011');
             return new DicomType(data_dicom, pixel_data, path, path.split('/').pop()?.replace('.dcm', '') as String, rows as number, cols as number);
         } catch (e) {
-            console.error(e);
             return null;
         }
     }
 
-    constructor(data_dicom: dicomParser.DataSet, pixel_data: Uint16Array, path: String, name: String, rows: number, cols: number,color: number[] = [0, 0, 0]) {
+    constructor(data_dicom: dicomParser.DataSet, pixel_data: any, path: String, name: String, rows: number, cols: number,color: number[] = [0, 0, 0]) {
         this._data_dicom = data_dicom;
         this._pixel_data = pixel_data;
         this._path = path;
@@ -184,17 +209,9 @@ class Controller {
                     return;
                 }
                 this._dicomViewer = new DicomViewer(dicom_);
-                // let dims = dicom_.niftiHeader.dims;
 
-                // @ts-ignore
-                // document.getElementById('dimensions').innerText = dims[0] + "D (" + dims.slice(1,dims[0] + 1).join(',') + ")";
-                // @ts-ignore
-                // document.getElementById('spacing').innerText = nifti_.niftiHeader.pixDims.slice(1,dims[0] + 1).join(' ');
-
-                // this.create_slice_slider(0, this._niftiViewer.data.niftiHeader.dims[3] - 1, Math.round(this._niftiViewer.data.niftiHeader.dims[3] / 2));
                 this.create_window_slider(this._dicomViewer.min_pixel, this._dicomViewer.max_pixel, this._dicomViewer.min_pixel, this._dicomViewer.max_pixel);
 
-                // this._sliders.slice = Math.round(this._niftiViewer.data.niftiHeader.dims[3] / 2);
                 this._sliders.window[0] = this._dicomViewer.min_pixel;
                 this._sliders.window[1] = this._dicomViewer.max_pixel;
                 this.drawCanvas();
