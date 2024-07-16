@@ -67,30 +67,6 @@ export class NiftiEditorProvider implements vscode.CustomReadonlyEditorProvider 
                         });
                     });
                 }
-                // vscode.window.showOpenDialog({
-                //     canSelectMany: true,
-                //     canSelectFiles: true,
-                //     canSelectFolders: false,
-                //     filters: {
-                //         'NIFTI': ['nii', 'nii.gz']
-                //     }
-                // }).then((uri) => {
-                //     if (uri === undefined || uri.length === 0) {
-                //         return;
-                //     }
-                //     for (let i = 0; i < uri.length; i++) {
-                //         const path: String = uri[i].path;
-                //         vscode.workspace.fs.readFile(uri[0]).then((data: Uint8Array) => {
-                //             webviewPanel.webview.postMessage({
-                //                 command: 'add_label',
-                //                 data: uint8ArrayToBase64(data),
-                //                 path: path,
-                //             });
-                //         });
-                //     }
-                // });
-            }else if (e.command === 'ready') {
-                console.log('ready');
             }
         });
         webviewPanel.onDidDispose(() => {

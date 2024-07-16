@@ -57,8 +57,8 @@
             </div>
             <div id="window">
                 <div class="buttons">
-                    <button class="layui-btn layui-btn-fluid" id="A" style="visibility: hidden;">X</button>
-                    <button class="layui-btn layui-btn-fluid" id="B" style="visibility: hidden;">Y</button>
+                    <input type="text" placeholder="W" class="layui-input" id="window_width" onchange="window_changed()">
+                    <input type="text" placeholder="L" class="layui-input" id="window_level" onchange="window_changed()">
                     <button class="layui-btn layui-btn-fluid" id="C" style="visibility: hidden;">Z</button>
                 </div>
                 <div class="slider">
@@ -101,9 +101,30 @@
                 type: 'vertical',
                 value: [min_threshold, max_threshold],
                 change: function(value) {
+                    document.getElementById('window_width').value = value[1] - value[0];
+                    document.getElementById('window_level').value = (value[1] + value[0]) / 2;
                     window.postMessage({command: 'window_change', min_threshold: value[0], max_threshold: value[1]});
                 }
             });
+            let window_width = document.getElementById('window_width');
+            let window_level = document.getElementById('window_level');
+            window_width.value = max_threshold - min_threshold;
+            window_level.value = (max_threshold + min_threshold) / 2;
+        }
+        
+        function window_changed() {
+            let window_width = document.getElementById('window_width').value;
+            let window_level = document.getElementById('window_level').value;
+            if(window_width === '-' || window_level === '-') {
+                return;
+            }
+            window_width = parseFloat(window_width);
+            window_level = parseFloat(window_level);
+            if(isNaN(window_width) || isNaN(window_level)) {
+                return;
+            }
+            sliders.window.setValue(window_level - window_width / 2, 0);
+            sliders.window.setValue(window_level + window_width / 2, 1);
         }
         
         window.addEventListener('message', function(event) {

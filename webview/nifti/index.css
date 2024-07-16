@@ -164,3 +164,8 @@
 #windows>div {
     margin: auto;
 }
+
+#window>.buttons>input {
+    margin-top: 5px;
+    background-color: #16baaa;
+}
