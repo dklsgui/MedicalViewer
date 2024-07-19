@@ -179,7 +179,7 @@ class Controller {
     private _vscode: any;
     // @ts-ignore
     private _dicomViewer: DicomViewer;
-    private readonly _label_alpha = 0.45;
+    private _label_alpha: number = 0.4;
     private _sliders = {
         slice: 0,
         window: [0, 0]
@@ -210,10 +210,14 @@ class Controller {
                 }
                 this._dicomViewer = new DicomViewer(dicom_);
 
-                this.create_window_slider(this._dicomViewer.min_pixel, this._dicomViewer.max_pixel, this._dicomViewer.min_pixel, this._dicomViewer.max_pixel);
+                this._label_alpha = event.data.alpha;
+                let min_threshold = event.data.level - event.data.width / 2;
+                let max_threshold = event.data.level + event.data.width / 2;
+                
+                this.create_window_slider(this._dicomViewer.min_pixel, this._dicomViewer.max_pixel, min_threshold, max_threshold);
 
-                this._sliders.window[0] = this._dicomViewer.min_pixel;
-                this._sliders.window[1] = this._dicomViewer.max_pixel;
+                this._sliders.window[0] = min_threshold;
+                this._sliders.window[1] = max_threshold;
                 this.drawCanvas();
             }else if (event.data.command === 'add_label') {
                 let data = base64ToUint8Array(event.data.data);

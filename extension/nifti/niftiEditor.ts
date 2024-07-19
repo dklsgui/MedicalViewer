@@ -43,6 +43,9 @@ export class NiftiEditorProvider implements vscode.CustomReadonlyEditorProvider 
                 webviewPanel.webview.postMessage({
                     command: 'init',
                     data: uint8ArrayToBase64(document.fd as Uint8Array),
+                    alpha: vscode.workspace.getConfiguration().get('medicalViewer.alpha'),
+                    level: vscode.workspace.getConfiguration().get('medicalViewer.Dicom.windowLevel'),
+                    width: vscode.workspace.getConfiguration().get('medicalViewer.Dicom.windowWidth'),
                     path: document.uuid
                 });
             }else if (e.command === 'show_label_dialog') {
