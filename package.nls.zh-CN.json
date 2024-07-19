@@ -1,3 +1,7 @@
 {
-    "description.medicalViewer.alpha": "标签的透明度，0表示完全透明，1表示完全不透明，值的范围为[0,1]。默认值:0.4"
+    "description.medicalViewer.alpha": "标签的透明度，0表示完全透明，1表示完全不透明，值的范围为[0,1]。默认值:0.4",
+    "description.medicalViewer.nifti.windowWidth": "Nifti数据的窗宽。默认值:100",
+    "description.medicalViewer.nifti.windowLevel": "Nifti数据的窗位。默认值:40",
+    "description.medicalViewer.dicom.windowWidth": "Dicom数据的窗宽。默认值:100",
+    "description.medicalViewer.dicom.windowLevel": "Dicom数据的窗位。默认值:40"
 }
