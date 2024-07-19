@@ -232,6 +232,8 @@ class Controller {
                 document.getElementById('dimensions').innerText = dims[0] + "D (" + dims.slice(1,dims[0] + 1).join(',') + ")";
                 // @ts-ignore
                 document.getElementById('spacing').innerText = nifti_.niftiHeader.pixDims.slice(1,dims[0] + 1).join(' ');
+                // @ts-ignore
+                document.getElementById('datatype').innerText = this._niftiViewer.data.data_type;
 
                 this._label_alpha = event.data.alpha;
                 let min_threshold = event.data.level - event.data.width / 2;

@@ -11,6 +11,7 @@ class DicomType{
     private _path: String;
     private _name: String;
     private _color: number[];
+    private _data_type: String;
 
     public static verifyDicom(data: Uint8Array, path: String) {
         try{
@@ -45,13 +46,13 @@ class DicomType{
             }
             let rows = data_dicom.uint16('x00280010');
             let cols = data_dicom.uint16('x00280011');
-            return new DicomType(data_dicom, pixel_data, path, path.split('/').pop()?.replace('.dcm', '') as String, rows as number, cols as number);
+            return new DicomType(data_dicom, pixel_data, dataType, path, path.split('/').pop()?.replace('.dcm', '') as String, rows as number, cols as number);
         } catch (e) {
             return null;
         }
     }
 
-    constructor(data_dicom: dicomParser.DataSet, pixel_data: any, path: String, name: String, rows: number, cols: number,color: number[] = [0, 0, 0]) {
+    constructor(data_dicom: dicomParser.DataSet, pixel_data: any, data_type: String, path: String, name: String, rows: number, cols: number,color: number[] = [0, 0, 0]) {
         this._data_dicom = data_dicom;
         this._pixel_data = pixel_data;
         this._path = path;
@@ -59,6 +60,7 @@ class DicomType{
         this._rows = rows;
         this._cols = cols;
         this._color = color;
+        this._data_type = data_type;
     }
 
     public get data_dicom() {
@@ -67,6 +69,10 @@ class DicomType{
 
     public get pixel_data() {
         return this._pixel_data;
+    }
+
+    public get data_type() {
+        return this._data_type;
     }
 
     public get path() {
@@ -209,6 +215,11 @@ class Controller {
                     return;
                 }
                 this._dicomViewer = new DicomViewer(dicom_);
+
+                // @ts-ignore
+                document.getElementById('dimensions').innerText = "2D (" + [this._dicomViewer.data.data_dicom.uint16('x00280010'), this._dicomViewer.data.data_dicom.uint16('x00280011')].join(',') + ")";
+                // @ts-ignore
+                document.getElementById('datatype').innerText = this._dicomViewer.data.data_type;
 
                 this._label_alpha = event.data.alpha;
                 let min_threshold = event.data.level - event.data.width / 2;
