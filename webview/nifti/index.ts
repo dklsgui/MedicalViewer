@@ -239,6 +239,9 @@ class Controller {
                 let min_threshold = event.data.level - event.data.width / 2;
                 let max_threshold = event.data.level + event.data.width / 2;
 
+                min_threshold = Math.max(min_threshold, this._niftiViewer.min_pixel);
+                max_threshold = Math.min(max_threshold, this._niftiViewer.max_pixel);
+
                 this.create_slice_slider(0, this._niftiViewer.data.niftiHeader.dims[3] - 1, Math.round(this._niftiViewer.data.niftiHeader.dims[3] / 2));
                 this.create_window_slider(this._niftiViewer.min_pixel, this._niftiViewer.max_pixel, min_threshold, max_threshold);
 

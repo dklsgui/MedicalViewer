@@ -125,8 +125,15 @@
             if(isNaN(window_width) || isNaN(window_level)) {
                 return;
             }
-            sliders.window.setValue(window_level - window_width / 2, 0);
-            sliders.window.setValue(window_level + window_width / 2, 1);
+
+            let min_threshold = window_level - window_width / 2;
+            let max_threshold = window_level + window_width / 2;
+
+            min_threshold = Math.max(min_threshold, sliders.window.config.min);
+            max_threshold = Math.min(max_threshold, sliders.window.config.max);
+
+            sliders.window.setValue(min_threshold, 0);
+            sliders.window.setValue(max_threshold, 1);
         }
         
         window.addEventListener('message', function(event) {

@@ -224,6 +224,9 @@ class Controller {
                 this._label_alpha = event.data.alpha;
                 let min_threshold = event.data.level - event.data.width / 2;
                 let max_threshold = event.data.level + event.data.width / 2;
+
+                min_threshold = Math.max(min_threshold, this._dicomViewer.min_pixel);
+                max_threshold = Math.min(max_threshold, this._dicomViewer.max_pixel);
                 
                 this.create_window_slider(this._dicomViewer.min_pixel, this._dicomViewer.max_pixel, min_threshold, max_threshold);
 
