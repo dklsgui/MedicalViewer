@@ -2,7 +2,7 @@
     "name": "medical-viewer",
     "displayName": "MedicalViewer",
     "description": "A simple medical image viewer",
-    "version": "2.0.0",
+    "version": "3.0.0",
     "publisher": "dklsgui",
     "author": {
         "name": "dklsgui"
