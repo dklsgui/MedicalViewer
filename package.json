@@ -71,22 +71,22 @@
                 },
                 "medicalViewer.Nifti.windowWidth": {
                     "type": "number",
-                    "default": 100,
+                    "default": 2000,
                     "description": "%description.medicalViewer.nifti.windowWidth%"
                 },
                 "medicalViewer.Nifti.windowLevel": {
                     "type": "number",
-                    "default": 40,
+                    "default": 1000,
                     "description": "%description.medicalViewer.nifti.windowLevel%"
                 },
                 "medicalViewer.Dicom.windowWidth": {
                     "type": "number",
-                    "default": 100,
+                    "default": 2000,
                     "description": "%description.medicalViewer.dicom.windowWidth%"
                 },
                 "medicalViewer.Dicom.windowLevel": {
                     "type": "number",
-                    "default": 40,
+                    "default": 1000,
                     "description": "%description.medicalViewer.dicom.windowLevel%"
                 }
             }
