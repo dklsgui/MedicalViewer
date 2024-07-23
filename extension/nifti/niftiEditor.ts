@@ -44,8 +44,8 @@ export class NiftiEditorProvider implements vscode.CustomReadonlyEditorProvider 
                     command: 'init',
                     data: uint8ArrayToBase64(document.fd as Uint8Array),
                     alpha: vscode.workspace.getConfiguration().get('medicalViewer.alpha'),
-                    level: vscode.workspace.getConfiguration().get('medicalViewer.Dicom.windowLevel'),
-                    width: vscode.workspace.getConfiguration().get('medicalViewer.Dicom.windowWidth'),
+                    level: vscode.workspace.getConfiguration().get('medicalViewer.Nifti.windowLevel'),
+                    width: vscode.workspace.getConfiguration().get('medicalViewer.Nifti.windowWidth'),
                     path: document.uuid
                 });
             }else if (e.command === 'show_label_dialog') {
