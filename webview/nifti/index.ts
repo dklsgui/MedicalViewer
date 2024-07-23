@@ -483,7 +483,7 @@ class Controller {
                 let r = 0, g = 0,b = 0;
                 for (let name of this._niftiViewer.selected_label) {
                     let label = this._niftiViewer.label.get(name) as NiftiType;
-                    let labelValue = label.niftiImage[offset];
+                    let labelValue = label.niftiImage[offset] > 0 ? 1 : 0;
                     r += label.color[0] * labelValue * this._label_alpha / this._niftiViewer.selected_label
                     .length;
                     g += label.color[1] * labelValue * this._label_alpha / this._niftiViewer.selected_label
