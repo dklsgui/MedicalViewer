@@ -1,7 +1,7 @@
 {
     "description.medicalViewer.alpha": "The transparency of the label, 0 means completely transparent,1 means completely opaque, the value range is [0,1]. Default: 0.4",
-    "description.medicalViewer.nifti.windowWidth": "The window width of the Nifti data. Default: 100",
-    "description.medicalViewer.nifti.windowLevel": "The window level of the Nifti data. Default: 40",
-    "description.medicalViewer.dicom.windowWidth": "The window width of the Dicom data. Default: 100",
-    "description.medicalViewer.dicom.windowLevel": "The window level of the Dicom data. Default: 40"
+    "description.medicalViewer.nifti.windowWidth": "The window width of the Nifti data. Default: 2000",
+    "description.medicalViewer.nifti.windowLevel": "The window level of the Nifti data. Default: 1000",
+    "description.medicalViewer.dicom.windowWidth": "The window width of the Dicom data. Default: 2000",
+    "description.medicalViewer.dicom.windowLevel": "The window level of the Dicom data. Default: 1000"
 }
