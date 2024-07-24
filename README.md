@@ -8,7 +8,9 @@ Currently supported data formats: `.nii`, `.nii.gz`, `.dcm`
 
 
 
-[![Preview in vscode.dev](https://img.shields.io/badge/preview%20in-vscode.dev-blue)](https://marketplace.visualstudio.com/items?itemName=dklsgui.medical-viewer) [![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/dklsgui.medical-viewer)](https://marketplace.visualstudio.com/items?itemName=dklsgui.medical-viewer) [![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/dklsgui.medical-viewer)](https://marketplace.visualstudio.com/items?itemName=dklsgui.medical-viewer)
+[![Preview in vscode.dev](https://img.shields.io/badge/preview%20in-vscode.dev-blue)](https://marketplace.visualstudio.com/items?itemName=dklsgui.medical-viewer) [![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/dklsgui.medical-viewer)](https://marketplace.visualstudio.com/items?itemName=dklsgui.medical-viewer) [![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/dklsgui.medical-viewer)](https://marketplace.visualstudio.com/items?itemName=dklsgui.medical-viewer) [![Visual Studio Marketplace Download](https://img.shields.io/visual-studio-marketplace/d/dklsgui.medical-viewer?color=%2345c017)](https://marketplace.visualstudio.com/items?itemName=dklsgui.medical-viewer)
+
+
 
 
 ## Features
