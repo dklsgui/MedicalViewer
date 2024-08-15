@@ -480,10 +480,14 @@ class Controller {
             for (let col = 0; col < cols; col++) {
                 let offset = this.calculate_coordinate(dims, row, col) as number;
                 let value = this._niftiViewer.data.niftiImage[offset];
-                let r = 0, g = 0,b = 0;
+                let r = 0, g = 0,b = 0, flag = 0;
                 for (let name of this._niftiViewer.selected_label) {
                     let label = this._niftiViewer.label.get(name) as NiftiType;
                     let labelValue = label.niftiImage[offset] > 0 ? 1 : 0;
+                    if(labelValue === 0) {
+                        continue;
+                    }
+                    flag += 1;
                     r += label.color[0] * labelValue * this._label_alpha / this._niftiViewer.selected_label
                     .length;
                     g += label.color[1] * labelValue * this._label_alpha / this._niftiViewer.selected_label
@@ -493,7 +497,7 @@ class Controller {
                 }
                 value = Math.min(Math.max(value, this._sliders.window[0]), this._sliders.window[1]);
                 value = (value - this._sliders.window[0]) / (this._sliders.window[1] - this._sliders.window[0]) * 255;
-                value = value * (1 - this._label_alpha);
+                value = flag > 0 ? value * (1 - this._label_alpha) : value;
     
                 canvasImageData.data[(rowOffset + col) * 4] = Math.round(value + r);
                 canvasImageData.data[(rowOffset + col) * 4 + 1] = Math.round(value + g);

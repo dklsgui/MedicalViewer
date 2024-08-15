@@ -416,10 +416,14 @@ class Controller {
         let canvasImageData = ctx.createImageData(cols, rows);
     
         for(let i = 0; i < this._dicomViewer.data.pixel_data.length; i++) {
-            let r = 0, g = 0, b = 0;
+            let r = 0, g = 0, b = 0, flag = 0;
             for(let name of this._dicomViewer.selected_label) {
                 let label = this._dicomViewer.label.get(name) as DicomType;
                 let labelValue = label.pixel_data[i] > 0 ? 1 : 0;
+                if(labelValue === 0) {
+                    continue;
+                }
+                flag += 1;
                 r += label.color[0] * labelValue * this._label_alpha / this._dicomViewer.selected_label.length;
                 g += label.color[1] * labelValue * this._label_alpha / this._dicomViewer.selected_label.length;
                 b += label.color[2] * labelValue * this._label_alpha / this._dicomViewer.selected_label.length;
@@ -427,7 +431,7 @@ class Controller {
             let value = this._dicomViewer.data.pixel_data[i];
             value = Math.min(Math.max(value, this._sliders.window[0]), this._sliders.window[1]);
             value = (value - this._sliders.window[0]) / (this._sliders.window[1] - this._sliders.window[0]) * 255;
-            value = value * (1 - this._label_alpha);
+            value = flag > 0 ? value * (1 - this._label_alpha) : value;
             canvasImageData.data[i * 4] = Math.round(value + r);
             canvasImageData.data[i * 4 + 1] = Math.round(value + g);
             canvasImageData.data[i * 4 + 2] = Math.round(value + b);
