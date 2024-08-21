@@ -123,6 +123,7 @@
         "dicom-parser": "^1.8.21",
         "jquery": "^3.7.1",
         "layui": "^2.9.14",
-        "nifti-reader-js": "^0.6.8"
+        "nifti-reader-js": "^0.6.8",
+        "nrrd-js": "^0.2.1"
     }
 }

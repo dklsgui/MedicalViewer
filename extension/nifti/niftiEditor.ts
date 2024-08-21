@@ -67,6 +67,7 @@ export class NiftiEditorProvider implements vscode.CustomReadonlyEditorProvider 
                             command: 'add_label',
                             data: uint8ArrayToBase64(data),
                             path: path,
+                            type: 'nii'
                         });
                     });
                 }
