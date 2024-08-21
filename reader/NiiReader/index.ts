@@ -84,14 +84,6 @@ class NiftiType{
     public get color() {
         return this._color;
     }
-
-    public set name(name: String) {
-        this._name = name;
-    }
-
-    public set color(color: number[]) {
-        this._color = color;
-    }
 }
 
 export default NiftiType;

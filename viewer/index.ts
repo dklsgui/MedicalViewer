@@ -38,8 +38,10 @@ class Viewer {
     }
 
     public add_label(label: Reader): String {
+        console.log("label", label.path);
         label.color = this.generate_color_for_label();
-        let name = label.path.split('/').pop()?.replace('.nii.gz', '').replace('.nii', '') as String;
+        let name = (label.path.split('/').pop() as String).replace(label.fileType.toString(), '') as String;
+        // let name = label.path.split('/').pop()?.replace('.nii.gz', '').replace('.nii', '') as String;
         name = this.generate_label_name(name);
         label.name = name;
         this._label.set(name, label);

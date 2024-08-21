@@ -1,4 +1,3 @@
-// import * as nifti from 'nifti-reader-js';
 import Reader from '../../reader';
 import Viewer from '../../viewer';
 import { base64ToUint8Array } from '../../utils/util';
@@ -46,13 +45,13 @@ class Controller {
         }
         // 添加插件端传输数据的监听
         // @ts-ignore
-        window.addEventListener('message', event => {
+        window.addEventListener('message', async event => {
             if (event.data.command === 'init') {
                 // 我也不知道为什么要加这一句，因为如果不加那么将HTML中的js部分会爆layui没定义的错误，或许bug+bug=normal~~
                 let temp = layui.slider;
                 let data = base64ToUint8Array(event.data.data);
-                let image = Reader.verify(data, "nii", event.data.path);
-                if (image instanceof String) {
+                let image = await Reader.verify(data, "nii", event.data.path);
+                if (!(image instanceof Reader)) {
                     return;
                 }
                 this._viewer = new Viewer(image as Reader);
@@ -82,7 +81,7 @@ class Controller {
             }else if (event.data.command === 'add_label') {
                 let data = base64ToUint8Array(event.data.data);
                 let path = event.data.path;
-                let label = Reader.verify(data, event.data.type, event.data.path);
+                let label = await Reader.verify(data, event.data.type, event.data.path);
                 if (label instanceof String) {
                     return;
                 }

@@ -1,5 +1,6 @@
 import NiftiType from './NiiReader/index';
 import DicomType from './DicomReader/index';
+import NrrdType from './NrrdReader/index';
 import { to2DArray, to3DArray } from '../utils/util';
 
 class Reader {
@@ -14,18 +15,17 @@ class Reader {
     private _max_pixel: number;
     private _min_pixel: number;
 
-    public static verify(data:Uint8Array, fileType:String, path:String): Reader | String {
+    public static async verify(data:Uint8Array, fileType:String, path:String): Promise<String | Reader> {
         let result;
         if (fileType === 'nii') {
             result = NiftiType.verifyNifti(data, path);
             if(result instanceof NiftiType){
-
                 return new Reader(
                     to3DArray(result.image, result.niftiHeader.dims.slice(1, 4)),
                     result.niftiHeader.dims.slice(1, 4),
-                    "nii",
+                    path.endsWith('.nii') ? 'nii' : 'nii.gz',
                     result.data_type,
-                    result.path,
+                    path,
                     result.name,
                     result.niftiHeader.pixDims.slice(1,4),
                     result.image.reduce((acc: any, cur: any) => Math.max(acc, cur), Number.MIN_SAFE_INTEGER),
@@ -41,7 +41,7 @@ class Reader {
                     [result.rows, result.cols],
                     "dcm",
                     result.data_type,
-                    result.path,
+                    path,
                     result.name,
                     [],
                     result.image.reduce((acc: any, cur: any) => Math.max(acc, cur), Number.MIN_SAFE_INTEGER),
@@ -50,7 +50,22 @@ class Reader {
                 );
             }
         } else if (fileType === "nrrd"){
-            result = "The file type is not supported";
+            result = await NrrdType.verifyNrrd(data, path);
+            if (result instanceof NrrdType) {
+                return new Reader(
+                    to3DArray(result.image, result.dims),
+                    result.dims,
+                    "nrrd",
+                    result.data_type,
+                    path,
+                    result.name,
+                    result.spacing,
+                    result.image.reduce((acc: any, cur: any) => Math.max(acc, cur), Number.MIN_SAFE_INTEGER),
+                    result.image.reduce((acc: any, cur: any) => Math.min(acc, cur), Number.MAX_SAFE_INTEGER),
+                    result.color
+                );
+            }
+            return "File is not a NIFTI file";
         }else {
             result = "The file type is not supported";
         }
@@ -63,6 +78,7 @@ class Reader {
         this._file_type = fileType;
         this._data_type = data_type;
         this._path = path;
+        console.log("path", path);
         this._name = name;
         this._spacing = spaceing;
         this._max_pixel = max_pixel;

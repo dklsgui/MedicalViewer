@@ -100,4 +100,24 @@ const dicomWebview = {
     ],
 };
 
-module.exports = [extension, niftiWebview, dicomWebview];
+const nrrdWebview = {
+    ...general,
+    target: 'web',
+    entry: {
+        webview_dicom: './webview/nrrd/index.ts'
+    },
+    output: {
+        ...general.output,
+        filename: 'webview/nrrd/index.js',
+    },
+    plugins: [
+        new CopyPlugin({
+            patterns: [
+                { from: './webview/nrrd/**/*.html', to: '' },
+                { from: './webview/nrrd/**/*.css', to: '' },
+            ],
+        }),
+    ],
+};
+
+module.exports = [extension, niftiWebview, dicomWebview, nrrdWebview];

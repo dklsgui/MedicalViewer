@@ -44,11 +44,14 @@ export function to2DArray(
     if (data.length !== rows * cols) {
         throw new Error("The size of the Float64Array does not match the specified dimensions.");
     }
-
     let result: number[][] = [];
 
-    for (let d = 0; d < rows; d++) {
-        result.push(Array.from(data.slice(d * rows * cols, d * rows * cols + cols)));
+    for (let row = 0; row < rows; row++) {
+        let temp: number[] = [];
+        for (let col = 0; col < cols; col++) {
+            temp.push(data[row * cols + col]);
+        }
+        result.push(temp);
     }
     return result;
 }
