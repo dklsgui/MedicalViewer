@@ -55,3 +55,15 @@ export function to2DArray(
     }
     return result;
 }
+
+export function timeout(s: number = 2): Promise<null> {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve(null);
+        }, s * 1000);
+    });
+}
+
+export function containsArray(arrayOfArrays: number[][], targetArray: number[]): boolean {
+    return arrayOfArrays.some(array => array.every((value, index) => value === targetArray[index]));
+}

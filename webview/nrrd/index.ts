@@ -1,10 +1,10 @@
 import Reader from '../../reader';
 import Viewer from '../../viewer';
+import { addLabel } from '../common/index';
 import { base64ToUint8Array } from '../../utils/util';
-// @ts-ignore
-import *  as layui from 'layui';
+declare const layui: any;
 
-class Controller {
+export class NrrdController {
     private _vscode: any;
     // @ts-ignore
     private _viewer: Viewer;
@@ -18,8 +18,7 @@ class Controller {
     constructor() {
         // @ts-ignore
         this._vscode = acquireVsCodeApi();
-        // @ts-ignore
-        const add_label_icon = document.getElementById('add_label_icon');
+        const add_label_icon = document.getElementById('add_label_icon') as HTMLElement;
         
         add_label_icon.addEventListener('click', () => {
             this._vscode.postMessage({
@@ -27,7 +26,6 @@ class Controller {
             });
         });
         
-        // @ts-ignore
         const axis_button = document.querySelectorAll('#axis>div>button');
         for (let i = 0; i < axis_button.length; i++) {
             axis_button[i].addEventListener('click', () => {
@@ -44,7 +42,6 @@ class Controller {
             });
         }
         // 添加插件端传输数据的监听
-        // @ts-ignore
         window.addEventListener('message', async event => {
             if (event.data.command === 'init') {
                 // 我也不知道为什么要加这一句，因为如果不加那么将HTML中的js部分会爆layui没定义的错误，或许bug+bug=normal~~
@@ -57,12 +54,9 @@ class Controller {
                 this._viewer = new Viewer(image as Reader);
                 let dims = this._viewer.data.dims;
 
-                // @ts-ignore
-                document.getElementById('dimensions').innerText = "3D (" + dims.join(',') + ")";
-                // @ts-ignore
-                document.getElementById('spacing').innerText = this._viewer.data.spacing.join(' ');
-                // @ts-ignore
-                document.getElementById('datatype').innerText = this._viewer.data.dataType;
+                (document.getElementById('dimensions') as HTMLElement).innerText = "3D (" + dims.join(',') + ")";
+                (document.getElementById('spacing') as HTMLElement).innerText = this._viewer.data.spacing.join(' ');
+                (document.getElementById('datatype') as HTMLElement).innerText = this._viewer.data.dataType.toString();
 
                 this._label_alpha = event.data.alpha;
                 let min_threshold = event.data.level - event.data.width / 2;
@@ -81,13 +75,13 @@ class Controller {
             }else if (event.data.command === 'add_label') {
                 let data = base64ToUint8Array(event.data.data);
                 let path = event.data.path;
-                let label = await Reader.verify(data, event.data.type, event.data.path);
+                let label = await Reader.verify(data, event.data.type, event.data.path, 'label');
                 if (label instanceof String) {
                     return;
                 }
                 let name = this._viewer.add_label(label as Reader);
                 this._viewer.selected_label.push(name);
-                this.add_label(name,path);
+                addLabel(name, path, this._viewer, this);
                 this.drawCanvas();
             }else if (event.data.command === 'slice_change') {
                 this._sliders.slice = event.data.value;
@@ -99,21 +93,19 @@ class Controller {
             }else if (event.data.command === 'color_change') {
                 let name = event.data.name;
                 let color = event.data.color;
-                // @ts-ignore
-                document.querySelector(`div[name="${name}"]`).style.backgroundColor = color;
+                let labelValue = event.data.labelValue;
                 if (this._viewer.label.has(name)) {
                     color = color.replace('rgb(', '').replace(')', '');
                     let r = parseInt(color.split(',')[0]);
                     let g = parseInt(color.split(',')[1]);
                     let b = parseInt(color.split(',')[2]);
-                    (this._viewer.label.get(name) as Reader).color = [r, g, b];
+                    (this._viewer.label.get(name) as Reader).setColor(labelValue, [r, g, b]);
                     if (this._viewer.selected_label.includes(name)) {
                         this.drawCanvas();
                     }
                 }
             }
         });
-        // @ts-ignore
         window.addEventListener('resize', () => {
             this.create_slice_slider(0, this._viewer.data.dims[this._axis] - 1, this._sliders.slice);
             this.create_window_slider(this._viewer.min_pixel, this._viewer.max_pixel, this._sliders.window[0], this._sliders.window[1]);
@@ -125,72 +117,8 @@ class Controller {
         });
     };
 
-    private add_label(name: String, path: String) {
-        // @ts-ignore
-        const labelList = document.getElementById('label_list');
-        // @ts-ignore
-        let div = document.createElement('div');
-        // @ts-ignore
-        let span = document.createElement('span');
-        // @ts-ignore
-        let color_select = document.createElement('div');
-        // @ts-ignore
-        let i = document.createElement('i');
-
-        let color = (this._viewer.label.get(name) as Reader).color.join(',') as String;
-
-        div.className = 'label';
-        div.setAttribute('title', path);
-        div.style.backgroundColor = 'red';
-
-        color_select.className = 'color_select';
-        color_select.setAttribute('name', name);
-        color_select.style.backgroundColor = 'rgb(' + color + ')';
-        color_select.addEventListener('click', () => {
-            // @ts-ignore
-            document.querySelector(`div[name="${name}"]`).children[0].click();
-        });
-
-        span.className = 'label_name';
-        span.innerText = name;
-        span.setAttribute('is_selected', 'true');
-        span.style.userSelect = 'none';
-        span.addEventListener('click', () => {
-            if (span.getAttribute('is_selected') === 'false') {
-                span.setAttribute('is_selected', "true");
-                div.style.backgroundColor = 'red';
-                this._viewer.selected_label.push(name);
-            } else {
-                span.setAttribute('is_selected', "false");
-                div.style.backgroundColor = 'rgb(0, 0, 255)';
-                this._viewer.selected_label = this._viewer.selected_label.filter((value) => value !== name);
-            }
-            this.drawCanvas();
-        });
-        i.className = 'layui-icon layui-icon-close delete_label';
-        i.addEventListener('click', () => {
-            div.remove();
-            if (this._viewer.delete_label(name)) {
-                this.drawCanvas();
-            }
-        });
-        div.appendChild(color_select);
-        div.appendChild(span);
-        div.appendChild(i);
-        labelList.appendChild(div);
-        // @ts-ignore
-        window.postMessage({
-            command: 'render_colorpicker',
-            elem: `div[name="${name}"]`,
-            color: color,
-            name: name
-        }); // 重新渲染颜色选择器
-    }
-
     private create_slice_slider(min: number, max: number, value: number) {
-        // @ts-ignore
-        let height = document.querySelector("#axis>div[class=slider]").clientHeight * 0.8;
-        // @ts-ignore
+        let height = (document.querySelector("#window>div[class=slider]") as HTMLElement).clientHeight * 0.8;
         window.postMessage({
             command: 'render_slice_slider',
             min: min,
@@ -212,19 +140,6 @@ class Controller {
             max_threshold: max_threshold,
             height: height
         });
-    }
-    
-    private calculate_coordinate(dims: number[],row: number, col: number) {
-        if (this._axis === 3) {
-            return col + dims[0] * row + dims[0] * dims[1] * this._sliders.slice;
-            // return row * dims[0] + col + dims[0] * dims[0] * this._sliders.slice;
-        } else if (this._axis === 2) {
-            // return row * dims[0] + this._sliders.slice + dims[0] * dims[1] * col;
-            return col + dims[0] * this._sliders.slice + dims[0] * dims[1] * (dims[2] - row - 1);
-        } else if (this._axis === 1) {
-            // return this._sliders.slice * dims[0] + col + dims[0] * dims[1] * row;
-            return this._sliders.slice + dims[0] * col + dims[0] * dims[1] * (dims[2] - row - 1);
-        }
     }
 
     // 双线性插值法
@@ -274,11 +189,9 @@ class Controller {
         return destImageData;
     }
 
-    private drawCanvas() {
-        // @ts-ignore
-        const canvas = document.getElementById('canvas');
-        // @ts-ignore
-        const data = document.getElementById('data');
+    public drawCanvas() {
+        const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+        const data = document.getElementById('data') as HTMLElement;
 
         let rows: number = 0;
         let cols: number = 0;
@@ -297,7 +210,7 @@ class Controller {
         canvas.width = Math.floor(cols * scale);
         canvas.height = Math.floor(rows * scale);
     
-        let ctx = canvas.getContext("2d");
+        let ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
         let canvasImageData = ctx.createImageData(cols, rows);
     
         for (let row = 0; row < rows; row++) {
@@ -326,11 +239,11 @@ class Controller {
                         continue;
                     }
                     flag += 1;
-                    r += label.color[0] * labelValue * this._label_alpha / this._viewer.selected_label
+                    r += label.getColorByLabelValue(labelValue)[0] * this._label_alpha / this._viewer.selected_label
                     .length;
-                    g += label.color[1] * labelValue * this._label_alpha / this._viewer.selected_label
+                    g += label.getColorByLabelValue(labelValue)[1] * this._label_alpha / this._viewer.selected_label
                     .length;
-                    b += label.color[2] * labelValue * this._label_alpha / this._viewer.selected_label
+                    b += label.getColorByLabelValue(labelValue)[2] * this._label_alpha / this._viewer.selected_label
                     .length;
                 }
                 value = Math.min(Math.max(value, this._sliders.window[0]), this._sliders.window[1]);
@@ -351,9 +264,8 @@ class Controller {
     }
 }
 
-// @ts-ignore
 window.addEventListener('message', event => {
     if (event.data.command === 'ready') {
-        new Controller();
+        new NrrdController();
     }
 });

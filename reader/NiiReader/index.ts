@@ -5,8 +5,6 @@ class NiftiType{
     private _niftiImage: any;
     private _data_type: String;
     private _path: String;
-    private _name: String;
-    private _color: number[];
 
     public static verifyNifti(data: Uint8Array, path: String) {
         let nii = nifti.Utils.toArrayBuffer(data);
@@ -47,18 +45,16 @@ class NiftiType{
             } else {
                 return "Data type not supported. Currently, the value can be Uint8, Int16, Int32, Float32, Float64, Int8, Uint16, Uint32";
             }
-            return new NiftiType(header, image, data_type,path, '');
+            return new NiftiType(header, image, data_type,path);
         }
         return "File is not a NIFTI file";
     }
 
-    constructor(niftiHeader: nifti.NIFTI1 | nifti.NIFTI2, niftiImage: any, data_type:String, path: String, name: String, color: number[] = [0, 0, 0]) {
+    constructor(niftiHeader: nifti.NIFTI1 | nifti.NIFTI2, niftiImage: any, data_type:String, path: String) {
         this._niftiHeader = niftiHeader;
         this._niftiImage = niftiImage;
         this._data_type = data_type;
         this._path = path;
-        this._name = name;
-        this._color = color;
     }
 
     public get niftiHeader() {
@@ -75,14 +71,6 @@ class NiftiType{
 
     public get path() {
         return this._path;
-    }
-
-    public get name() {
-        return this._name;
-    }
-
-    public get color() {
-        return this._color;
     }
 }
 

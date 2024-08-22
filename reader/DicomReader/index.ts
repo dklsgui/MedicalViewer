@@ -6,8 +6,6 @@ class DicomType{
     private _rows: number;
     private _cols: number;
     private _path: String;
-    private _name: String;
-    private _color: number[];
     private _data_type: String;
 
     public static verifyDicom(data: Uint8Array, path: String) {
@@ -43,20 +41,18 @@ class DicomType{
             }
             let rows = data_dicom.uint16('x00280010');
             let cols = data_dicom.uint16('x00280011');
-            return new DicomType(data_dicom, pixel_data, dataType, path, path.split('/').pop()?.replace('.dcm', '') as String, rows as number, cols as number);
+            return new DicomType(data_dicom, pixel_data, dataType, path, rows as number, cols as number);
         } catch (e) {
             return "Unknown error";
         }
     }
 
-    constructor(data_dicom: dicomParser.DataSet, pixel_data: any, data_type: String, path: String, name: String, rows: number, cols: number,color: number[] = [0, 0, 0]) {
+    constructor(data_dicom: dicomParser.DataSet, pixel_data: any, data_type: String, path: String, rows: number, cols: number) {
         this._data_dicom = data_dicom;
         this._pixel_data = pixel_data;
         this._path = path;
-        this._name = name;
         this._rows = rows;
         this._cols = cols;
-        this._color = color;
         this._data_type = data_type;
     }
 
@@ -76,28 +72,12 @@ class DicomType{
         return this._path;
     }
 
-    public get name() {
-        return this._name;
-    }
-
     public get rows() {
         return this._rows;
     }
 
     public get cols() {
         return this._cols;
-    }
-
-    public get color() {
-        return this._color;
-    }
-
-    public set name(name: String) {
-        this._name = name;
-    }
-
-    public set color(color: number[]) {
-        this._color = color;
     }
 }
 

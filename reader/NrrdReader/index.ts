@@ -2,13 +2,10 @@ const { nrrdReadImage } = require("@itk-wasm/image-io");
 class NrrdType{
     private _image: any;
     private _data_type: String;
-    private _name: String;
-    private _color: number[];
     private _dims: number[];
     private _spacing: number[];
 
     public static async verifyNrrd(data: Uint8Array, path: String) {
-        // @ts-ignore
         const platform  = window.navigator.platform.toLowerCase();
         if (platform.indexOf('win') >= 0){
             path = path.replace(/\//g, "\\");
@@ -37,18 +34,16 @@ class NrrdType{
             } else {
                 return "Data type not supported. Currently, the value can be Uint8, Int16, Int32, Float32, Float64, Int8, Uint16, Uint32";
             }
-            return new NrrdType(result.image.data, result.image.size, result.image.spacing, data_type, '');
+            return new NrrdType(result.image.data, result.image.size, result.image.spacing, data_type);
         }
         return "File is not a NIFTI file";
     }
 
-    constructor(image: any, dims: number[], spacing: number[], data_type:String, name: String, color: number[] = [0, 0, 0]) {
+    constructor(image: any, dims: number[], spacing: number[], data_type:String) {
         this._image = image;
         this._dims = dims;
         this._spacing = spacing;
         this._data_type = data_type;
-        this._name = name;
-        this._color = color;
     }
 
     public get image() {
@@ -65,14 +60,6 @@ class NrrdType{
 
     public get data_type() {
         return this._data_type;
-    }
-
-    public get name() {
-        return this._name;
-    }
-
-    public get color() {
-        return this._color;
     }
 }
 

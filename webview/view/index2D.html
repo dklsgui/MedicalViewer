@@ -7,6 +7,10 @@
     <title>Nifti Viewer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.9.14/css/layui.css" integrity="sha512-YL3el60sSycKIM/ld2Vf1bD4qd3JvBJ0+y4Ra/rOdZrin7FC+ng3JSu2yGHddZ6m+npECxE4BCw76sGnH9PyWw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="${cssUri}">
+    <link rel="stylesheet" href="${baseCssUri}">
+    <script src="https://cdn.jsdelivr.net/npm/layui@2.9.16/dist/layui.min.js"></script>
+    <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript" src="${scriptUri}"></script>
 </head>
 
 <body>        
@@ -17,14 +21,12 @@
                 <thead>
                     <tr>
                         <th>Dimensions</th>
-                        <th>Spacing</th>
                         <th>DataType</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td id="dimensions">Loding</td>
-                        <td id="spacing">Loding</td>
                         <td id="datatype">Loding</td>
                     </tr>
                 </tbody>
@@ -44,7 +46,7 @@
         </div>
         <div class="padding"></div>
         <div id="panel">
-            <div id="axis">
+            <div id="axis" style="visibility: hidden;">
                 <div class="buttons">
                     <button class="layui-btn layui-btn-fluid" id="X" is_selected="false">X</button>
                     <button class="layui-btn layui-btn-fluid" id="Y" is_selected="false">Y</button>
@@ -61,7 +63,7 @@
                 <div class="buttons">
                     <input type="text" title="window level" placeholder="L" class="layui-input" id="window_level" onchange="window_changed()">
                     <input type="text" title="window width" placeholder="W" class="layui-input" id="window_width" onchange="window_changed()">
-                    <button class="layui-btn layui-btn-fluid" id="C" style="visibility: hidden;">Z</button>
+                    <button class="layui-btn layui-btn-fluid" style="visibility: hidden;">Z</button>
                 </div>
                 <div class="slider">
                     <i class="layui-inline" id="windows"></i>
@@ -70,28 +72,25 @@
         </div>
         <div class="padding"></div>
     </div>
-    <script type="text/javascript" src="${scriptUri}"></script>
+    <div id="color_picker" style="display: none;">
+        <div style="display: flex;justify-content: center;">
+            <table>
+                <thead>
+                    <tr>
+                        <td>label</td>
+                        <td>color</td>
+                    </tr>
+                </thead>
+                <tbody id="tbody_color_select">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <button id="color_picker_button" style="display: none;" lay-on="page"></button>
     <script>
         sliders = {
-            slice: null,
             window: null
-        }
-        function render_slice_slider(min, max, height, value) {
-            document.getElementById('slice').innerHTML = '';
-            sliders.slice = layui.slider.render({
-                elem: "#slice",
-                min: min,
-                max: max,
-                value: value,
-                height: height,
-                type: 'vertical',
-                change: function(value) {
-                    sliders.slice.config.value = value;
-                    window.postMessage({command: 'slice_change', value: value});
-                }
-            });
-        }
-        
+        }        
         function render_window_slider(min, max, height, min_threshold, max_threshold) {
             document.getElementById('windows').innerHTML = '';
             sliders.window = layui.slider.render({
@@ -125,7 +124,6 @@
             if(isNaN(window_width) || isNaN(window_level)) {
                 return;
             }
-
             let min_threshold = window_level - window_width / 2;
             let max_threshold = window_level + window_width / 2;
 
@@ -138,39 +136,30 @@
         
         window.addEventListener('message', function(event) {
             let data = event.data;
-            if (data.command === 'render_slice_slider') {
-                render_slice_slider(data.min, data.max, data.height, data.value);
-            }else if (data.command === 'render_window_slider') {
+            if (data.command === 'render_window_slider') {
                 render_window_slider(data.min, data.max, data.height, data.min_threshold, data.max_threshold);
-            } else if (data.command === 'render_colorpicker') {
-                layui.use(function(){
-                    var colorpicker = layui.colorpicker;
-                    colorpicker.render({ // eg1
-                        elem: data.elem, // 绑定元素
-                        color: data.color,
-                        format: 'rgb',
-                        // @ts-ignore
-                        change: function(color){ // 颜色改变的回调
-                            window.postMessage({
-                                command: 'color_change', 
-                                color: color,
-                                name: data.name
-                            });
-                        }
-                    });
-                });
-            }
-        });
-        document.getElementById('canvas').addEventListener('wheel', function(event) {
-            if (event.deltaY === 0) {
-                return;
-            }else if (event.deltaY > 0) {
-                sliders.slice.setValue(sliders.slice.config.value - 1);
-            }else {
-                sliders.slice.setValue(sliders.slice.config.value + 1);
             }
         });
         window.postMessage({command: 'ready'});
+        layui.use(function(){
+            var layer = layui.layer;
+            var util = layui.util;
+            // 批量事件
+            util.on('lay-on', {
+                page: function(){
+                    // 页面层
+                    layer.open({
+                        type: 1,
+                        title: "Change Color",
+                        area: ['250px', '240px'], // 宽高
+                        content: $('#color_picker'),
+                        end: function() {
+                            document.getElementById('color_picker').style.display = 'none';
+                        }
+                    })
+                },
+            });
+        });
     </script>
 </body>
 </html>

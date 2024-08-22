@@ -88,6 +88,13 @@ export class DicomEditorProvider implements vscode.CustomReadonlyEditorProvider 
                 'webview/dicom/index.css'
             )
         );
+        const baseCssUri = webview.asWebviewUri(
+            vscode.Uri.joinPath(
+                ext.extensionUri,
+                'dist',
+                'webview/style/base.css'
+            )
+        );
         const scriptUri = webview.asWebviewUri(
             vscode.Uri.joinPath(
                 ext.extensionUri,
@@ -96,11 +103,12 @@ export class DicomEditorProvider implements vscode.CustomReadonlyEditorProvider 
             )
         );
         const uri = ext.extensionUri.with({
-            path: ext.extensionUri.path + '/dist/webview/dicom/index.html'
+            path: ext.extensionUri.path + '/dist/webview/view/index2D.html'
         });
         const html = await vscode.workspace.fs.readFile(uri);
         return Buffer.from(html).toString('utf8')
             .replace(/\$\{scriptUri\}/g, scriptUri.toString())
-            .replace(/\$\{cssUri\}/g, cssUri.toString());
+            .replace(/\$\{cssUri\}/g, cssUri.toString())
+            .replace(/\$\{baseCssUri\}/g, baseCssUri.toString());
     }
 }

@@ -89,6 +89,13 @@ export class NrrdEditorProvider implements vscode.CustomReadonlyEditorProvider {
                 'webview/nrrd/index.css'
             )
         );
+        const baseCssUri = webview.asWebviewUri(
+            vscode.Uri.joinPath(
+                ext.extensionUri,
+                'dist',
+                'webview/style/base.css'
+            )
+        );
         const scriptUri = webview.asWebviewUri(
             vscode.Uri.joinPath(
                 ext.extensionUri,
@@ -97,11 +104,12 @@ export class NrrdEditorProvider implements vscode.CustomReadonlyEditorProvider {
             )
         );
         const uri = ext.extensionUri.with({
-            path: ext.extensionUri.path + '/dist/webview/nrrd/index.html'
+            path: ext.extensionUri.path + '/dist/webview/view/index3D.html'
         });
         const html = await vscode.workspace.fs.readFile(uri);
         return Buffer.from(html).toString('utf8')
             .replace(/\$\{scriptUri\}/g, scriptUri.toString())
-            .replace(/\$\{cssUri\}/g, cssUri.toString());
+            .replace(/\$\{cssUri\}/g, cssUri.toString())
+            .replace(/\$\{baseCssUri\}/g, baseCssUri.toString());
     }
 }

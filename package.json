@@ -115,6 +115,7 @@
     "test": "vscode-test"
   },
   "devDependencies": {
+    "@types/jquery": "^3.5.30",
     "@types/mocha": "^10.0.7",
     "@types/node": "20.x",
     "@types/vscode": "^1.64.0",
