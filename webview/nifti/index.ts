@@ -9,7 +9,7 @@ export class NiftiController {
     // @ts-ignore
     private _viewer: Viewer;
     private  _label_alpha: number = 0.4;
-    private _axis: number = 2;
+    private _axis: number = 0;
     private _sliders = {
         slice: 0,
         window: [0, 0]
@@ -196,14 +196,14 @@ export class NiftiController {
         let rows: number = 0;
         let cols: number = 0;
         if (this._axis === 0) {
-            rows = this._viewer.data.dims[2];
-            cols = this._viewer.data.dims[1];
-        } else if(this._axis === 1) {
-            rows = this._viewer.data.dims[2];
-            cols = this._viewer.data.dims[0];
-        } else if(this._axis === 2) {
             rows = this._viewer.data.dims[1];
-            cols = this._viewer.data.dims[0];
+            cols = this._viewer.data.dims[2];
+        } else if(this._axis === 1) {
+            rows = this._viewer.data.dims[0];
+            cols = this._viewer.data.dims[2];
+        } else if(this._axis === 2) {
+            rows = this._viewer.data.dims[0];
+            cols = this._viewer.data.dims[1];
         }
         
         let scale = Math.min(data.clientWidth / cols, data.clientHeight / rows) * 0.95;
@@ -218,22 +218,22 @@ export class NiftiController {
             for (let col = 0; col < cols; col++) {
                 let value;
                 if (this._axis === 0) {
-                    value = this._viewer.data.image[this._sliders.slice][col][rows - row - 1];
+                    value = this._viewer.data.image[this._sliders.slice][row][col];
                 } else if (this._axis === 1) {
-                    value = this._viewer.data.image[col][this._sliders.slice][rows - row - 1];
+                    value = this._viewer.data.image[rows - row - 1][this._sliders.slice][col];
                 } else if (this._axis === 2) {
-                    value = this._viewer.data.image[col][row][this._sliders.slice];
+                    value = this._viewer.data.image[rows - row - 1][col][this._sliders.slice];
                 }
                 let r = 0, g = 0,b = 0, flag = 0;
                 for (let name of this._viewer.selected_label) {
                     let label = this._viewer.label.get(name) as Reader;
                     let labelValue;
                     if (this._axis === 0) {
-                        labelValue = label.image[this._sliders.slice][col][rows - row - 1];
+                        labelValue = label.image[this._sliders.slice][row][col];
                     } else if (this._axis === 1) {
-                        labelValue = label.image[col][this._sliders.slice][rows - row - 1];
+                        labelValue = label.image[rows - row - 1][this._sliders.slice][col];
                     } else if (this._axis === 2) {
-                        labelValue = label.image[col][row][this._sliders.slice];
+                        labelValue = label.image[rows - row - 1][col][this._sliders.slice];
                     }
                     if(labelValue === 0) {
                         continue;

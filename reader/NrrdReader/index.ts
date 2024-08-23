@@ -41,8 +41,8 @@ class NrrdType{
 
     constructor(image: any, dims: number[], spacing: number[], data_type:String) {
         this._image = image;
-        this._dims = dims;
-        this._spacing = spacing;
+        this._dims = [dims[2], dims[1], dims[0]];
+        this._spacing = [spacing[2], spacing[1], spacing[0]];
         this._data_type = data_type;
     }
 

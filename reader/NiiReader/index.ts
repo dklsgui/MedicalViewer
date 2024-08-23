@@ -5,6 +5,8 @@ class NiftiType{
     private _niftiImage: any;
     private _data_type: String;
     private _path: String;
+    private _dims: number[];
+    private _spacing: number[];
 
     public static verifyNifti(data: Uint8Array, path: String) {
         let nii = nifti.Utils.toArrayBuffer(data);
@@ -55,6 +57,8 @@ class NiftiType{
         this._niftiImage = niftiImage;
         this._data_type = data_type;
         this._path = path;
+        this._dims = [niftiHeader.dims[3], niftiHeader.dims[2], niftiHeader.dims[1]];
+        this._spacing = [niftiHeader.pixDims[3], niftiHeader.pixDims[2], niftiHeader.pixDims[1]];
     }
 
     public get niftiHeader() {
@@ -71,6 +75,14 @@ class NiftiType{
 
     public get path() {
         return this._path;
+    }
+
+    public get dims() {
+        return this._dims;
+    }
+
+    public get spacing() {
+        return this._spacing;
     }
 }
 

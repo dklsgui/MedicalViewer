@@ -73,7 +73,7 @@ const niftiWebview = {
     plugins: [
         new CopyPlugin({
             patterns: [
-                { from: './webview/view/index3D.html', to: '' },
+                { from: './webview/view/**/*.html', to: '' },
                 { from: './webview/nifti/**/*.css', to: '' },
                 { from: './webview/style/**/*.css', to: '' },
             ],
@@ -94,7 +94,7 @@ const dicomWebview = {
     plugins: [
         new CopyPlugin({
             patterns: [
-                { from: './webview/view/index2D.html', to: '' },
+                { from: './webview/view/**/*.html', to: '' },
                 { from: './webview/dicom/**/*.css', to: '' },
                 { from: './webview/style/**/*.css', to: '' },
             ],
@@ -115,7 +115,7 @@ const nrrdWebview = {
     plugins: [
         new CopyPlugin({
             patterns: [
-                { from: './webview/view/index3D.html', to: '' },
+                { from: './webview/view/**/*.html', to: '' },
                 { from: './webview/nrrd/**/*.css', to: '' },
                 { from: './webview/style/**/*.css', to: '' },
             ],

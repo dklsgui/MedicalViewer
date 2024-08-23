@@ -2,6 +2,7 @@ import NiftiType from './NiiReader/index';
 import DicomType from './DicomReader/index';
 import NrrdType from './NrrdReader/index';
 import { timeout, to2DArray, to3DArray } from '../utils/util';
+import { resolve } from 'path';
 
 class Reader {
     private _image: any;
@@ -32,12 +33,12 @@ class Reader {
                     labelPixel.sort();
                 }
                 result = new Reader(
-                    to3DArray(result.image, result.niftiHeader.dims.slice(1, 4)),
-                    result.niftiHeader.dims.slice(1, 4),
+                    to3DArray(result.image, result.dims),
+                    result.dims,
                     path.endsWith('.nii') ? 'nii' : 'nii.gz',
                     result.data_type,
                     path,
-                    result.niftiHeader.pixDims.slice(1,4),
+                    result.spacing,
                     result.image.reduce((acc: any, cur: any) => Math.max(acc, cur), Number.MIN_SAFE_INTEGER),
                     result.image.reduce((acc: any, cur: any) => Math.min(acc, cur), Number.MAX_SAFE_INTEGER),
                     labelPixel
@@ -67,7 +68,9 @@ class Reader {
                 );
             }
         } else if (fileType === "nrrd"){
+            // Fri Aug 23 2024 09:23:34 GMT+0800
             result = await NrrdType.verifyNrrd(data, path);
+            // Fri Aug 23 2024 09:23:35 GMT+0800
             if (result instanceof NrrdType) {
                 if (type === "label") {
                     labelPixel = await Reader.getLabelPixel(result.image);
@@ -77,6 +80,7 @@ class Reader {
                     labelPixel = labelPixel.filter((value, _, self) => self.indexOf(value) !== 0);
                     labelPixel.sort();
                 }
+                // Fri Aug 23 2024 09:23:35 GMT+0800
                 result = new Reader(
                     to3DArray(result.image, result.dims),
                     result.dims,
@@ -88,6 +92,7 @@ class Reader {
                     result.image.reduce((acc: any, cur: any) => Math.min(acc, cur), Number.MAX_SAFE_INTEGER),
                     labelPixel
                 );
+                // Fri Aug 23 2024 09:23:39 GMT+0800
             }
         }else {
             result = "The file type is not supported";

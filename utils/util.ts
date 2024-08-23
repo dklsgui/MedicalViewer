@@ -22,17 +22,12 @@ export function to3DArray(
     }
 
     let result: number[][][] = [];
-
-    for (let i = 0; i < shape[0]; i++) {
-        let temp1: number[][] = [];
-        for (let j = 0; j < shape[1]; j++) {
-            let temp2: number[] = [];
-            for (let k = 0; k < shape[2]; k++) {
-                temp2.push(data[i + j * shape[0] + k * shape[0] * shape[1]]);
-            }
-            temp1.push(temp2);
+    for (let z = 0; z < shape[0]; z++) {
+        let temp: number[][] = [];
+        for (let y = 0; y < shape[1]; y++) {
+            temp.push(Array.from(data.slice(z * shape[1] * shape[2] + y * shape[2], z * shape[1] * shape[2] + y * shape[2] + shape[2])));
         }
-        result.push(temp1);
+        result.push(temp);
     }
     return result;
 }
