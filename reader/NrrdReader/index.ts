@@ -36,7 +36,7 @@ class NrrdType{
             }
             return new NrrdType(result.image.data, result.image.size, result.image.spacing, data_type);
         }
-        return "File is not a NIFTI file";
+        return "File is not a NRRD file";
     }
 
     constructor(image: any, dims: number[], spacing: number[], data_type:String) {
