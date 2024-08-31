@@ -62,7 +62,7 @@ export class NrrdEditorProvider implements vscode.CustomReadonlyEditorProvider {
                 }
                 for (let i = 0; i < uri.length; i++) {
                     const path: String = uri[i].path;
-                    vscode.workspace.fs.readFile(uri[0]).then((data: Uint8Array) => {
+                    vscode.workspace.fs.readFile(uri[i]).then((data: Uint8Array) => {
                         webviewPanel.webview.postMessage({
                             command: 'add_label',
                             data: uint8ArrayToBase64(data),
