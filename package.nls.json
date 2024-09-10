@@ -3,5 +3,7 @@
     "description.medicalViewer.nifti.windowWidth": "The window width of the Nifti data. Default: 2000",
     "description.medicalViewer.nifti.windowLevel": "The window level of the Nifti data. Default: 1000",
     "description.medicalViewer.dicom.windowWidth": "The window width of the Dicom data. Default: 2000",
-    "description.medicalViewer.dicom.windowLevel": "The window level of the Dicom data. Default: 1000"
+    "description.medicalViewer.dicom.windowLevel": "The window level of the Dicom data. Default: 1000",
+    "description.medicalViewer.nrrd.windowWidth": "The window width of the Nrrd data. Default: 2000",
+    "description.medicalViewer.nrrd.windowLevel": "The window level of the Nrrd data. Default: 1000"
 }

@@ -44,8 +44,8 @@ export class NrrdEditorProvider implements vscode.CustomReadonlyEditorProvider {
                     command: 'init',
                     data: uint8ArrayToBase64(document.fd as Uint8Array),
                     alpha: vscode.workspace.getConfiguration().get('medicalViewer.alpha'),
-                    level: vscode.workspace.getConfiguration().get('medicalViewer.Nifti.windowLevel'),
-                    width: vscode.workspace.getConfiguration().get('medicalViewer.Nifti.windowWidth'),
+                    level: vscode.workspace.getConfiguration().get('medicalViewer.Nrrd.windowLevel'),
+                    width: vscode.workspace.getConfiguration().get('medicalViewer.Nrrd.windowWidth'),
                     path: document.uuid
                 });
             }else if (e.command === 'show_label_dialog') {

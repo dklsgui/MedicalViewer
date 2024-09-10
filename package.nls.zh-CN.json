@@ -3,5 +3,7 @@
     "description.medicalViewer.nifti.windowWidth": "Nifti数据的窗宽。默认值:2000",
     "description.medicalViewer.nifti.windowLevel": "Nifti数据的窗位。默认值:1000",
     "description.medicalViewer.dicom.windowWidth": "Dicom数据的窗宽。默认值:2000",
-    "description.medicalViewer.dicom.windowLevel": "Dicom数据的窗位。默认值:1000"
+    "description.medicalViewer.dicom.windowLevel": "Dicom数据的窗位。默认值:1000",
+    "description.medicalViewer.nrrd.windowWidth": "Nrrd数据的窗宽。默认值:2000",
+    "description.medicalViewer.nrrd.windowLevel": "Nrrd数据的窗位。默认值:1000"
 }

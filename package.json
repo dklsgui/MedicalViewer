@@ -99,6 +99,16 @@
           "type": "number",
           "default": 2000,
           "description": "%description.medicalViewer.dicom.windowWidth%"
+        },
+        "medicalViewer.Nrrd.windowLevel": {
+          "type": "number",
+          "default": 1000,
+          "description": "%description.medicalViewer.nrrd.windowLevel%"
+        },
+        "medicalViewer.Nrrd.windowWidth": {
+          "type": "number",
+          "default": 2000,
+          "description": "%description.medicalViewer.nrrd.windowWidth%"
         }
       }
     }
