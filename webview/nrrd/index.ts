@@ -4,7 +4,7 @@ import { addLabel } from '../common/index';
 import { base64ToUint8Array } from '../../utils/util';
 declare const layui: any;
 
-export class NiftiController {
+export class NrrdController {
     private _vscode: any;
     // @ts-ignore
     private _viewer: Viewer;
@@ -47,7 +47,7 @@ export class NiftiController {
                 // 我也不知道为什么要加这一句，因为如果不加那么将HTML中的js部分会爆layui没定义的错误，或许bug+bug=normal~~
                 let temp = layui.slider;
                 let data = base64ToUint8Array(event.data.data);
-                let image = await Reader.verify(data, "nii", event.data.path);
+                let image = await Reader.verify(data, "nrrd", event.data.path);
                 if (!(image instanceof Reader)) {
                     return;
                 }
@@ -118,9 +118,7 @@ export class NiftiController {
     };
 
     private create_slice_slider(min: number, max: number, value: number) {
-        // @ts-ignore
-        let height = document.querySelector("#axis>div[class=slider]").clientHeight * 0.8;
-        // @ts-ignore
+        let height = (document.querySelector("#window>div[class=slider]") as HTMLElement).clientHeight * 0.8;
         window.postMessage({
             command: 'render_slice_slider',
             min: min,
@@ -131,7 +129,9 @@ export class NiftiController {
     }
 
     private create_window_slider(min: number, max: number, min_threshold: number, max_threshold: number) {
-        let height = (document.querySelector("#window>div[class=slider]") as HTMLElement).clientHeight * 0.8;
+        // @ts-ignore
+        let height = document.querySelector("#window>div[class=slider]").clientHeight * 0.8;
+        // @ts-ignore
         window.postMessage({
             command: 'render_window_slider',
             min: min,
@@ -260,12 +260,11 @@ export class NiftiController {
         scaleCanvasImageData = this.bilinearInterpolation(canvasImageData, scaleCanvasImageData, canvas.width, canvas.height);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.putImageData(scaleCanvasImageData, 0, 0);
-        // ctx.putImageData(canvasImageData, 0, 0);
     }
 }
 
 window.addEventListener('message', event => {
     if (event.data.command === 'ready') {
-        new NiftiController();
+        new NrrdController();
     }
 });

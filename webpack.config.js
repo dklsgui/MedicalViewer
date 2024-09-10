@@ -73,8 +73,9 @@ const niftiWebview = {
     plugins: [
         new CopyPlugin({
             patterns: [
-                { from: './webview/nifti/**/*.html', to: '' },
+                { from: './webview/view/**/*.html', to: '' },
                 { from: './webview/nifti/**/*.css', to: '' },
+                { from: './webview/style/**/*.css', to: '' },
             ],
         }),
     ],
@@ -93,11 +94,33 @@ const dicomWebview = {
     plugins: [
         new CopyPlugin({
             patterns: [
-                { from: './webview/dicom/**/*.html', to: '' },
+                { from: './webview/view/**/*.html', to: '' },
                 { from: './webview/dicom/**/*.css', to: '' },
+                { from: './webview/style/**/*.css', to: '' },
             ],
         }),
     ],
 };
 
-module.exports = [extension, niftiWebview, dicomWebview];
+const nrrdWebview = {
+    ...general,
+    target: 'web',
+    entry: {
+        webview_dicom: './webview/nrrd/index.ts'
+    },
+    output: {
+        ...general.output,
+        filename: 'webview/nrrd/index.js',
+    },
+    plugins: [
+        new CopyPlugin({
+            patterns: [
+                { from: './webview/view/**/*.html', to: '' },
+                { from: './webview/nrrd/**/*.css', to: '' },
+                { from: './webview/style/**/*.css', to: '' },
+            ],
+        }),
+    ],
+};
+
+module.exports = [extension, niftiWebview, dicomWebview, nrrdWebview];

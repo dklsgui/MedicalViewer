@@ -3,11 +3,11 @@ import { Buffer } from 'buffer';
 import { Document } from '../common/document';
 import { uint8ArrayToBase64 } from '../../utils/util';
 
-export class NiftiEditorProvider implements vscode.CustomReadonlyEditorProvider {
+export class NrrdEditorProvider implements vscode.CustomReadonlyEditorProvider {
     public static register(context: vscode.ExtensionContext): vscode.Disposable {
-        const provider = new NiftiEditorProvider(context);
+        const provider = new NrrdEditorProvider(context);
         const providerRegistration = vscode.window.registerCustomEditorProvider(
-            NiftiEditorProvider.viewType, 
+            NrrdEditorProvider.viewType, 
             provider, {
                 webviewOptions: {
                     retainContextWhenHidden: true,
@@ -16,7 +16,7 @@ export class NiftiEditorProvider implements vscode.CustomReadonlyEditorProvider 
         return providerRegistration;
     }
 
-    private static readonly viewType = 'medical-viewer.Nifti';
+    private static readonly viewType = 'medical-viewer.Nrrd';
 
     constructor(
         private readonly context: vscode.ExtensionContext
@@ -44,8 +44,8 @@ export class NiftiEditorProvider implements vscode.CustomReadonlyEditorProvider 
                     command: 'init',
                     data: uint8ArrayToBase64(document.fd as Uint8Array),
                     alpha: vscode.workspace.getConfiguration().get('medicalViewer.alpha'),
-                    level: vscode.workspace.getConfiguration().get('medicalViewer.Nifti.windowLevel'),
-                    width: vscode.workspace.getConfiguration().get('medicalViewer.Nifti.windowWidth'),
+                    level: vscode.workspace.getConfiguration().get('medicalViewer.Nrrd.windowLevel'),
+                    width: vscode.workspace.getConfiguration().get('medicalViewer.Nrrd.windowWidth'),
                     path: document.uuid
                 });
             }else if (e.command === 'show_label_dialog') {
@@ -54,7 +54,7 @@ export class NiftiEditorProvider implements vscode.CustomReadonlyEditorProvider 
                     canSelectFiles: true,
                     canSelectFolders: false,
                     filters: {
-                        'NIFTI': ['nii', 'nii.gz']
+                        'NRRD': ['nrrd']
                     }
                 });
                 if (uri === undefined || uri.length === 0) {
@@ -67,7 +67,7 @@ export class NiftiEditorProvider implements vscode.CustomReadonlyEditorProvider 
                             command: 'add_label',
                             data: uint8ArrayToBase64(data),
                             path: path,
-                            type: 'nii'
+                            type: 'nrrd'
                         });
                     });
                 }
@@ -86,7 +86,7 @@ export class NiftiEditorProvider implements vscode.CustomReadonlyEditorProvider 
             vscode.Uri.joinPath(
                 ext.extensionUri,
                 'dist',
-                'webview/nifti/index.css'
+                'webview/nrrd/index.css'
             )
         );
         const baseCssUri = webview.asWebviewUri(
@@ -100,7 +100,7 @@ export class NiftiEditorProvider implements vscode.CustomReadonlyEditorProvider 
             vscode.Uri.joinPath(
                 ext.extensionUri,
                 'dist',
-                'webview/nifti/index.js'
+                'webview/nrrd/index.js'
             )
         );
         const uri = ext.extensionUri.with({

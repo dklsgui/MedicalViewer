@@ -7,6 +7,10 @@
     <title>Nifti Viewer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.9.14/css/layui.css" integrity="sha512-YL3el60sSycKIM/ld2Vf1bD4qd3JvBJ0+y4Ra/rOdZrin7FC+ng3JSu2yGHddZ6m+npECxE4BCw76sGnH9PyWw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="${cssUri}">
+    <link rel="stylesheet" href="${baseCssUri}">
+    <script src="https://cdn.jsdelivr.net/npm/layui@2.9.16/dist/layui.min.js"></script>
+    <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript" src="${scriptUri}"></script>
 </head>
 
 <body>        
@@ -68,7 +72,21 @@
         </div>
         <div class="padding"></div>
     </div>
-    <script type="text/javascript" src="${scriptUri}"></script>
+    <div id="color_picker" style="display: none;">
+        <div style="display: flex;justify-content: center;">
+            <table>
+                <thead>
+                    <tr>
+                        <td>label</td>
+                        <td>color</td>
+                    </tr>
+                </thead>
+                <tbody id="tbody_color_select">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <button id="color_picker_button" style="display: none;" lay-on="page"></button>
     <script>
         sliders = {
             window: null
@@ -120,26 +138,28 @@
             let data = event.data;
             if (data.command === 'render_window_slider') {
                 render_window_slider(data.min, data.max, data.height, data.min_threshold, data.max_threshold);
-            } else if (data.command === 'render_colorpicker') {
-                layui.use(function(){
-                    var colorpicker = layui.colorpicker;
-                    colorpicker.render({ // eg1
-                        elem: data.elem, // 绑定元素
-                        color: data.color,
-                        format: 'rgb',
-                        // @ts-ignore
-                        change: function(color){ // 颜色改变的回调
-                            window.postMessage({
-                                command: 'color_change', 
-                                color: color,
-                                name: data.name
-                            });
-                        }
-                    });
-                });
             }
         });
         window.postMessage({command: 'ready'});
+        layui.use(function(){
+            var layer = layui.layer;
+            var util = layui.util;
+            // 批量事件
+            util.on('lay-on', {
+                page: function(){
+                    // 页面层
+                    layer.open({
+                        type: 1,
+                        title: "Change Color",
+                        area: ['250px', '240px'], // 宽高
+                        content: $('#color_picker'),
+                        end: function() {
+                            document.getElementById('color_picker').style.display = 'none';
+                        }
+                    })
+                },
+            });
+        });
     </script>
 </body>
 </html>

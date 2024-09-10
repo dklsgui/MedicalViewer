@@ -1,128 +1,151 @@
 {
-    "name": "medical-viewer",
-    "displayName": "MedicalViewer",
-    "description": "A simple medical image viewer",
-    "version": "2.0.3",
-    "publisher": "dklsgui",
-    "author": {
-        "name": "dklsgui"
-    },
-    "engines": {
-        "vscode": "^1.64.0"
-    },
-    "categories": [
-        "Visualization",
-        "Data Science",
-        "Other"
+  "name": "medical-viewer",
+  "displayName": "MedicalViewer",
+  "description": "A simple medical image viewer",
+  "version": "3.0.0",
+  "publisher": "dklsgui",
+  "author": {
+    "name": "dklsgui"
+  },
+  "engines": {
+    "vscode": "^1.64.0"
+  },
+  "categories": [
+    "Visualization",
+    "Data Science",
+    "Other"
+  ],
+  "keywords": [
+    "medical",
+    "nifti",
+    "Other"
+  ],
+  "galleryBanner": {
+    "color": "#1e1e1e",
+    "theme": "dark"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dklsgui/MedicalViewer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dklsgui/MedicalViewer/issues"
+  },
+  "icon": "medical-viewer.png",
+  "activationEvents": [],
+  "main": "dist/extension-vscode.js",
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "medical-viewer.Nifti",
+        "displayName": "Nifti Viewer",
+        "priority": "default",
+        "selector": [
+          {
+            "filenamePattern": "*.nii"
+          },
+          {
+            "filenamePattern": "*.nii.gz"
+          }
+        ]
+      },
+      {
+        "viewType": "medical-viewer.Dicom",
+        "displayName": "Dicom Viewer",
+        "priority": "default",
+        "selector": [
+          {
+            "filenamePattern": "*.dcm"
+          }
+        ]
+      },
+      {
+        "viewType": "medical-viewer.Nrrd",
+        "displayName": "Nrrd Viewer",
+        "priority": "default",
+        "selector": [
+          {
+            "filenamePattern": "*.nrrd"
+          }
+        ]
+      }
     ],
-    "keywords": [
-        "medical",
-        "nifti",
-        "Other"
-    ],
-    "galleryBanner": {
-        "color": "#1e1e1e",
-        "theme": "dark"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/dklsgui/MedicalViewer.git"
-    },
-    "bugs": {
-        "url": "https://github.com/dklsgui/MedicalViewer/issues"
-    },
-    "icon": "medical-viewer.png",
-    "activationEvents": [],
-    "main": "dist/extension-vscode.js",
-    "contributes": {
-        "customEditors": [
-            {
-                "viewType": "medical-viewer.Nifti",
-                "displayName": "Nifti Viewer",
-                "priority": "default",
-                "selector": [
-                    {
-                        "filenamePattern": "*.nii"
-                    },
-                    {
-                        "filenamePattern": "*.nii.gz"
-                    }
-                ]
-            },
-            {
-                "viewType": "medical-viewer.Dicom",
-                "displayName": "Dicom Viewer",
-                "priority": "default",
-                "selector": [
-                    {
-                        "filenamePattern": "*.dcm"
-                    }
-                ]
-            }
-        ],
-        "configuration": {
-            "title": "Medical Viewer",
-            "properties": {
-                "medicalViewer.alpha": {
-                    "type": "number",
-                    "default": 0.4,
-                    "description": "%description.medicalViewer.alpha%",
-                    "minimum": 0,
-                    "maximum": 1
-                },
-                "medicalViewer.Nifti.windowLevel": {
-                    "type": "number",
-                    "default": 1000,
-                    "description": "%description.medicalViewer.nifti.windowLevel%"
-                },
-                "medicalViewer.Nifti.windowWidth": {
-                    "type": "number",
-                    "default": 2000,
-                    "description": "%description.medicalViewer.nifti.windowWidth%"
-                },
-                "medicalViewer.Dicom.windowLevel": {
-                    "type": "number",
-                    "default": 1000,
-                    "description": "%description.medicalViewer.dicom.windowLevel%"
-                },
-                "medicalViewer.Dicom.windowWidth": {
-                    "type": "number",
-                    "default": 2000,
-                    "description": "%description.medicalViewer.dicom.windowWidth%"
-                }
-            }
+    "configuration": {
+      "title": "Medical Viewer",
+      "properties": {
+        "medicalViewer.alpha": {
+          "type": "number",
+          "default": 0.4,
+          "description": "%description.medicalViewer.alpha%",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "medicalViewer.Nifti.windowLevel": {
+          "type": "number",
+          "default": 1000,
+          "description": "%description.medicalViewer.nifti.windowLevel%"
+        },
+        "medicalViewer.Nifti.windowWidth": {
+          "type": "number",
+          "default": 2000,
+          "description": "%description.medicalViewer.nifti.windowWidth%"
+        },
+        "medicalViewer.Dicom.windowLevel": {
+          "type": "number",
+          "default": 1000,
+          "description": "%description.medicalViewer.dicom.windowLevel%"
+        },
+        "medicalViewer.Dicom.windowWidth": {
+          "type": "number",
+          "default": 2000,
+          "description": "%description.medicalViewer.dicom.windowWidth%"
+        },
+        "medicalViewer.Nrrd.windowLevel": {
+          "type": "number",
+          "default": 1000,
+          "description": "%description.medicalViewer.nrrd.windowLevel%"
+        },
+        "medicalViewer.Nrrd.windowWidth": {
+          "type": "number",
+          "default": 2000,
+          "description": "%description.medicalViewer.nrrd.windowWidth%"
         }
-    },
-    "scripts": {
-        "vscode:prepublish": "npm run package",
-        "compile": "webpack",
-        "watch": "webpack --watch",
-        "package": "webpack --mode production --devtool hidden-source-map",
-        "compile-tests": "tsc -p . --outDir out",
-        "watch-tests": "tsc -p . -w --outDir out",
-        "pretest": "npm run compile-tests && npm run compile && npm run lint",
-        "lint": "eslint src --ext ts",
-        "test": "vscode-test"
-    },
-    "devDependencies": {
-        "@types/mocha": "^10.0.7",
-        "@types/node": "20.x",
-        "@types/vscode": "^1.64.0",
-        "@typescript-eslint/eslint-plugin": "^7.14.1",
-        "@typescript-eslint/parser": "^7.11.0",
-        "@vscode/test-cli": "^0.0.9",
-        "@vscode/test-electron": "^2.4.0",
-        "copy-webpack-plugin": "^12.0.2",
-        "eslint": "^8.57.0",
-        "ts-loader": "^9.5.1",
-        "typescript": "^5.4.5",
-        "webpack": "^5.92.1",
-        "webpack-cli": "^5.1.4"
-    },
-    "dependencies": {
-        "dicom-parser": "^1.8.21",
-        "jquery": "^3.7.1",
-        "layui": "^2.9.14",
-        "nifti-reader-js": "^0.6.8"
+      }
     }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/jquery": "^3.5.30",
+    "@types/mocha": "^10.0.7",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.64.0",
+    "@typescript-eslint/eslint-plugin": "^7.14.1",
+    "@typescript-eslint/parser": "^7.11.0",
+    "@vscode/test-cli": "^0.0.9",
+    "@vscode/test-electron": "^2.4.0",
+    "copy-webpack-plugin": "^12.0.2",
+    "eslint": "^8.57.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.4.5",
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "@itk-wasm/image-io": "^1.3.0",
+    "dicom-parser": "^1.8.21",
+    "esm": "^3.2.25",
+    "jquery": "^3.7.1",
+    "layui": "^2.9.14",
+    "nifti-reader-js": "^0.6.8"
+  }
 }

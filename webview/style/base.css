@@ -1,0 +1,193 @@
+#color_picker table {
+    width: 200px; 
+    min-height: 25px; 
+    line-height: 25px; 
+    text-align: center; 
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+#color_picker table td {
+    border: 1px solid #b6ff00;
+    width: 20px;
+}
+
+.color-show {
+    height: 20px;
+    width: 50%;
+    margin: auto;
+}
+
+.color-select {
+    visibility: hidden;
+}
+
+#main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.padding {
+    height: 5px;
+}
+
+#info {
+    margin: auto;
+    width: 90%;
+    color: gray;
+    /* height: 10%; */
+    /* max-height: 100px; */
+}
+
+#info table {
+    width: 100%;
+    border-collapse: collapse;
+    /* border: 2px solid gray; */
+    text-align: center;
+    table-layout: fixed;
+}
+
+#info th, #info td {
+    border: 1px solid gray;
+    padding: 5px;
+    border-collapse: collapse;
+}
+
+#label_workspace {
+    margin: auto;
+    width: 90%;
+    min-height: 50px;
+    display: flex;
+    border: 1px solid gray;
+}
+
+#label_list {
+    flex-grow: 1;
+    height: 100%;
+    display: flex;
+    justify-content: left;
+    align-items: flex-start;
+    flex-flow:row wrap;
+}
+
+.label {
+    border-radius: 8px;
+    background-color: rgb(0, 0, 255);
+    border: 1px solid black;
+    min-width: 40px;
+    text-align: center;
+    padding: 1px 4px;
+    margin: 2px;
+    display: flex;
+    justify-content: center;
+}
+
+.label > .color_select {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin: auto;
+    margin-right: 5px;
+    border: 1px solid black;
+}
+
+.label > .color_select > div {
+    display: none !important;
+}
+
+.label > .label_name {
+    flex: 1;
+}
+
+.delete-label {
+    float: right;
+    margin-left: 5px;
+}
+
+#add_label {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    height: 100%;
+}
+
+#add_label_icon {
+    font-size: 20px;
+    color: gray;
+}
+
+#panel {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    border: 1px solid gray;
+    margin: auto;
+    width: 90%;
+    flex: 1;
+    overflow: hidden;
+}
+
+#axis {
+    width: 50px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin: 5px 2px auto 2px;
+}
+
+#axis>div>button[is_selected=true] {
+    background-color: red;
+    color: white;
+}
+
+.layui-btn+.layui-btn {
+    margin: 0px;
+    margin-top: 5px;
+}
+
+.slider {
+    margin-top: 10px;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+#slice > div {
+    margin: auto;
+}
+
+#data {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#canvas {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+#window {
+    width: 50px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#windows>div {
+    margin: auto;
+}
+
+#window>.buttons>input {
+    margin-top: 5px;
+    background-color: #16baaa;
+}
